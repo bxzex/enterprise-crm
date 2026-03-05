@@ -58,8 +58,3 @@
     @apply bg-background text-foreground;
   }
 }
-
-/* Test rule to verify CSS loading */
-h1 {
-  color: #ff0000 !important;
-}

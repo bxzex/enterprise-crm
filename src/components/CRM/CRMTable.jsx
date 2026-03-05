@@ -57,7 +57,10 @@ const CRMTable = ({ leads, onAdd, onDelete }) => {
                             className="pl-9 pr-4 py-1.5 bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-zinc-200 w-64"
                         />
                     </div>
-                    <button className="flex items-center gap-2 text-zinc-500 hover:text-zinc-900 text-sm font-medium px-3 py-1.5 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded-lg transition-all">
+                    <button
+                        onClick={() => alert('Advanced filtering criteria selected - Applying local logic...')}
+                        className="flex items-center gap-2 text-zinc-500 hover:text-zinc-900 text-sm font-medium px-3 py-1.5 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded-lg transition-all active:scale-95"
+                    >
                         <Filter size={16} />
                         Filters
                     </button>
@@ -88,7 +91,11 @@ const CRMTable = ({ leads, onAdd, onDelete }) => {
                                         <td className="px-6 py-4">
                                             <div className="font-bold text-zinc-900 dark:text-white flex items-center gap-2">
                                                 {lead.name}
-                                                <ExternalLink size={12} className="text-zinc-300 group-hover:text-zinc-500 cursor-pointer" />
+                                                <ExternalLink
+                                                    size={12}
+                                                    className="text-zinc-300 group-hover:text-zinc-500 cursor-pointer hover:text-zinc-900 transition-colors"
+                                                    onClick={() => alert(`Navigating to organization portal for ${lead.name}`)}
+                                                />
                                             </div>
                                             <div className="text-xs text-zinc-500">{lead.date}</div>
                                         </td>
@@ -115,7 +122,10 @@ const CRMTable = ({ leads, onAdd, onDelete }) => {
                                                 >
                                                     <Trash2 size={16} />
                                                 </button>
-                                                <button className="p-1.5 text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-all">
+                                                <button
+                                                    onClick={() => alert(`Contextual actions for ${lead.name}: Edit, Duplicate, or Archive.`)}
+                                                    className="p-1.5 text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-all"
+                                                >
                                                     <MoreHorizontal size={16} />
                                                 </button>
                                             </div>

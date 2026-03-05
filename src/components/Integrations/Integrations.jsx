@@ -21,7 +21,9 @@ const Integrations = () => {
     const toggleStatus = (id) => {
         setSystems(prev => prev.map(s => {
             if (s.id === id) {
-                const nextStatus = s.status === 'Connected' ? 'Disconnected' : 'Connected';
+                const statuses = ['Connected', 'Disconnected', 'Setup Required', 'Normal'];
+                const currentIndex = statuses.indexOf(s.status);
+                const nextStatus = statuses[(currentIndex + 1) % statuses.length];
                 return { ...s, status: nextStatus };
             }
             return s;
@@ -34,7 +36,10 @@ const Integrations = () => {
                 <div className="relative z-10">
                     <h2 className="text-3xl font-bold mb-2">Connect Your Stack</h2>
                     <p className="text-zinc-400 max-w-lg">Streamline your enterprise operations by connecting your existing tools and automating data flows.</p>
-                    <button className="mt-6 px-6 py-3 bg-white text-zinc-900 rounded-xl font-bold text-sm shadow-xl hover:scale-105 transition-all">
+                    <button
+                        onClick={() => alert(`Synchronizing with Enterprise Marketplace... Connected to external relay.`)}
+                        className="mt-6 px-6 py-3 bg-white text-zinc-900 rounded-xl font-bold text-sm shadow-xl hover:scale-105 active:scale-95 transition-all"
+                    >
                         Explore Marketplace
                     </button>
                 </div>

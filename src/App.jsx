@@ -42,14 +42,18 @@ function App() {
                 <Header activeTab={activeTab} />
 
                 <main className="flex-1 overflow-x-hidden overflow-y-auto p-6 scroll-smooth">
-                    {activeTab === 'dashboard' && <Dashboard leads={leads} />}
-                    {activeTab === 'leads' && <CRMTable leads={leads} onAdd={addLead} onDelete={deleteLead} />}
-                    {activeTab === 'tasks' && <Tasks />}
-                    {activeTab === 'team' && <Team />}
-                    {activeTab === 'analytics' && <Performance />}
-                    {activeTab === 'integrations' && <Integrations />}
-                    {activeTab === 'settings' && <Settings />}
-                    <Footer />
+                    <div className="min-h-full flex flex-col gap-12">
+                        <div className="flex-1">
+                            {activeTab === 'dashboard' && <Dashboard leads={leads} setActiveTab={setActiveTab} />}
+                            {activeTab === 'leads' && <CRMTable leads={leads} onAdd={addLead} onDelete={deleteLead} />}
+                            {activeTab === 'tasks' && <Tasks />}
+                            {activeTab === 'team' && <Team />}
+                            {activeTab === 'analytics' && <Performance />}
+                            {activeTab === 'integrations' && <Integrations />}
+                            {activeTab === 'settings' && <Settings />}
+                        </div>
+                        <Footer />
+                    </div>
                 </main>
             </div>
         </div>

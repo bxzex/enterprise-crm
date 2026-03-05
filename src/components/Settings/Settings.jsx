@@ -29,7 +29,8 @@ const Settings = () => {
                 {sections.map((section) => (
                     <button
                         key={section.id}
-                        className="group flex items-start gap-4 p-6 bg-white dark:bg-zinc-900 rounded-2xl border border-slate-200 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600 transition-all text-left shadow-sm"
+                        onClick={() => alert(`Configuring ${section.label}: Accessing localized persistence layer...`)}
+                        className="group flex items-start gap-4 p-6 bg-white dark:bg-zinc-900 rounded-2xl border border-slate-200 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600 transition-all text-left shadow-sm active:scale-95"
                     >
                         <div className="p-3 bg-zinc-50 dark:bg-zinc-800 rounded-xl group-hover:bg-zinc-900 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-zinc-900 transition-all">
                             <section.icon size={22} />

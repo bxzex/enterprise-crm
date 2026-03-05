@@ -32,7 +32,7 @@ const StatCard = ({ title, value, icon: Icon, trend, color }) => (
     </motion.div>
 );
 
-const Dashboard = ({ leads }) => {
+const Dashboard = ({ leads, setActiveTab }) => {
     return (
         <div className="space-y-8 max-w-[1400px] mx-auto">
 
@@ -41,7 +41,10 @@ const Dashboard = ({ leads }) => {
                     <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">Workspace Overview</h1>
                     <p className="text-sm text-zinc-500">Welcome back, Brian. Here's what's happening today.</p>
                 </div>
-                <button className="flex items-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 px-4 py-2.5 rounded-xl text-sm font-bold hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-all shadow-md shadow-zinc-200 dark:shadow-none">
+                <button
+                    onClick={() => alert('Operational Report Generation Started - Check local Downloads in 10s')}
+                    className="flex items-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 px-4 py-2.5 rounded-xl text-sm font-bold hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-all shadow-md active:scale-95"
+                >
                     <Plus size={18} />
                     Create Report
                 </button>
@@ -60,7 +63,7 @@ const Dashboard = ({ leads }) => {
                 <div className="lg:col-span-2 bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-slate-200 dark:border-zinc-800 shadow-sm">
                     <div className="flex justify-between items-center mb-8">
                         <h3 className="font-bold text-lg text-zinc-900 dark:text-white">Revenue Overview</h3>
-                        <select className="bg-zinc-50 dark:bg-zinc-800 border-none text-xs font-bold px-3 py-1.5 rounded-lg outline-none">
+                        <select className="bg-zinc-50 dark:bg-zinc-800 border-none text-xs font-bold px-3 py-1.5 rounded-lg outline-none cursor-pointer">
                             <option>Last 7 Days</option>
                             <option>Last Month</option>
                         </select>
@@ -105,7 +108,10 @@ const Dashboard = ({ leads }) => {
                             </div>
                         ))}
                     </div>
-                    <button className="w-full mt-8 py-2.5 bg-zinc-50 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 text-xs font-bold rounded-xl hover:bg-zinc-100 transition-all uppercase tracking-wider">
+                    <button
+                        onClick={() => setActiveTab('leads')}
+                        className="w-full mt-8 py-2.5 bg-zinc-50 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 text-xs font-bold rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-all uppercase tracking-wider active:scale-95"
+                    >
                         View All Activity
                     </button>
                 </div>
