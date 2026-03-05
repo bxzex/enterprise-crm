@@ -35,7 +35,7 @@ const StatCard = ({ title, value, icon: Icon, trend, color }) => (
 const Dashboard = ({ leads }) => {
     return (
         <div className="space-y-8 max-w-[1400px] mx-auto">
-            {/* Top Section */}
+
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">Workspace Overview</h1>
@@ -47,7 +47,7 @@ const Dashboard = ({ leads }) => {
                 </button>
             </div>
 
-            {/* Stats Grid */}
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <StatCard title="Total Revenue" value="$145,200" icon={DollarSign} trend={12.5} color="bg-zinc-900 dark:bg-zinc-800" />
                 <StatCard title="Active Leads" value={leads.length} icon={Users} trend={8.2} color="bg-zinc-900 dark:bg-zinc-800" />
@@ -55,11 +55,11 @@ const Dashboard = ({ leads }) => {
                 <StatCard title="Average Deal" value="$8,400" icon={TrendingUp} trend={4.5} color="bg-zinc-900 dark:bg-zinc-800" />
             </div>
 
-            {/* Charts Section */}
+
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2 bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-slate-200 dark:border-zinc-800 shadow-sm">
                     <div className="flex justify-between items-center mb-8">
-                        <h3 className="font-bold text-lg text-zinc-900 dark:text-white">Revenue Intelligence</h3>
+                        <h3 className="font-bold text-lg text-zinc-900 dark:text-white">Revenue Overview</h3>
                         <select className="bg-zinc-50 dark:bg-zinc-800 border-none text-xs font-bold px-3 py-1.5 rounded-lg outline-none">
                             <option>Last 7 Days</option>
                             <option>Last Month</option>

@@ -128,7 +128,7 @@ const CRMTable = ({ leads, onAdd, onDelete }) => {
                 </div>
             </div>
 
-            {/* Add Lead Modal */}
+
             {showAddModal && (
                 <div className="fixed inset-0 bg-zinc-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
                     <motion.div
