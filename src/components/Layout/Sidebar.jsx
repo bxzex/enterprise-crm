@@ -1,11 +1,14 @@
-import { LayoutDashboard, Users, UserPlus, Settings, BarChart3, LogOut, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, Users, Settings, BarChart3, LogOut, CheckSquare, Shield, Share2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Sidebar = ({ activeTab, setActiveTab }) => {
     const menuItems = [
         { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
         { id: 'leads', label: 'Leads & CRM', icon: Users },
+        { id: 'tasks', label: 'Tasks & Activity', icon: CheckSquare },
+        { id: 'team', label: 'Team Management', icon: Shield },
         { id: 'analytics', label: 'Performance', icon: BarChart3 },
+        { id: 'integrations', label: 'Integrations', icon: Share2 },
         { id: 'settings', label: 'Settings', icon: Settings },
     ];
 
@@ -26,8 +29,8 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
                         key={item.id}
                         onClick={() => setActiveTab(item.id)}
                         className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${activeTab === item.id
-                                ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm'
-                                : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-50 dark:hover:bg-zinc-800/50'
+                            ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm'
+                            : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-50 dark:hover:bg-zinc-800/50'
                             }`}
                     >
                         <div className="flex items-center gap-3">

@@ -5,7 +5,10 @@ const Header = ({ activeTab }) => {
         switch (activeTab) {
             case 'dashboard': return 'Overview';
             case 'leads': return 'Lead Management';
+            case 'tasks': return 'Tasks & Activity';
+            case 'team': return 'Team Management';
             case 'analytics': return 'Performance Metrics';
+            case 'integrations': return 'System Integrations';
             case 'settings': return 'System Settings';
             default: return 'Overview';
         }

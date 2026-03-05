@@ -3,6 +3,11 @@ import Sidebar from './components/Layout/Sidebar';
 import Header from './components/Layout/Header';
 import Dashboard from './components/Dashboard/Dashboard';
 import CRMTable from './components/CRM/CRMTable';
+import Tasks from './components/Tasks/Tasks';
+import Team from './components/Team/Team';
+import Performance from './components/Analytics/Performance';
+import Integrations from './components/Integrations/Integrations';
+import Settings from './components/Settings/Settings';
 
 function App() {
     const [activeTab, setActiveTab] = useState('dashboard');
@@ -29,15 +34,20 @@ function App() {
     };
 
     return (
-        <div className="flex h-screen bg-slate-50 dark:bg-zinc-950">
+        <div className="flex h-screen bg-slate-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 selection:bg-zinc-900 selection:text-white dark:selection:bg-white dark:selection:text-zinc-900">
             <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
             <div className="flex-1 flex flex-col overflow-hidden">
                 <Header activeTab={activeTab} />
 
-                <main className="flex-1 overflow-x-hidden overflow-y-auto p-6">
+                <main className="flex-1 overflow-x-hidden overflow-y-auto p-6 scroll-smooth">
                     {activeTab === 'dashboard' && <Dashboard leads={leads} />}
                     {activeTab === 'leads' && <CRMTable leads={leads} onAdd={addLead} onDelete={deleteLead} />}
+                    {activeTab === 'tasks' && <Tasks />}
+                    {activeTab === 'team' && <Team />}
+                    {activeTab === 'analytics' && <Performance />}
+                    {activeTab === 'integrations' && <Integrations />}
+                    {activeTab === 'settings' && <Settings />}
                 </main>
             </div>
         </div>
