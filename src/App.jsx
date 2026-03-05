@@ -8,6 +8,7 @@ import Team from './components/Team/Team';
 import Performance from './components/Analytics/Performance';
 import Integrations from './components/Integrations/Integrations';
 import Settings from './components/Settings/Settings';
+import Footer from './components/Layout/Footer';
 
 function App() {
     const [activeTab, setActiveTab] = useState('dashboard');
@@ -48,6 +49,7 @@ function App() {
                     {activeTab === 'analytics' && <Performance />}
                     {activeTab === 'integrations' && <Integrations />}
                     {activeTab === 'settings' && <Settings />}
+                    <Footer />
                 </main>
             </div>
         </div>

@@ -1,6 +1,19 @@
+import { useState, useEffect } from 'react';
 import { User, Bell, Shield, Palette, Globe, CreditCard } from 'lucide-react';
 
 const Settings = () => {
+    const [prefs, setPrefs] = useState(() => {
+        const saved = localStorage.getItem('crm_settings');
+        return saved ? JSON.parse(saved) : {
+            emailNotif: true,
+            realtimeAlerts: false,
+        };
+    });
+
+    useEffect(() => {
+        localStorage.setItem('crm_settings', JSON.stringify(prefs));
+    }, [prefs]);
+
     const sections = [
         { id: 'profile', label: 'Admin Profile', icon: User, desc: 'Manage your administrative identity' },
         { id: 'security', label: 'Security & Access', icon: Shield, desc: 'Two-factor auth and active sessions' },
@@ -37,18 +50,24 @@ const Settings = () => {
                             <p className="text-sm font-bold text-zinc-800 dark:text-zinc-200">Email Notifications</p>
                             <p className="text-xs text-zinc-500">Receive daily pipeline summaries</p>
                         </div>
-                        <div className="w-10 h-5 bg-zinc-900 dark:bg-white rounded-full relative cursor-pointer">
-                            <div className="absolute top-0.5 right-0.5 w-4 h-4 bg-white dark:bg-zinc-900 rounded-full shadow-sm"></div>
-                        </div>
+                        <button
+                            onClick={() => setPrefs({ ...prefs, emailNotif: !prefs.emailNotif })}
+                            className={`w-10 h-5 rounded-full relative transition-colors ${prefs.emailNotif ? 'bg-zinc-900 dark:bg-white' : 'bg-zinc-200 dark:bg-zinc-700'}`}
+                        >
+                            <div className={`absolute top-0.5 w-4 h-4 rounded-full shadow-sm transition-all ${prefs.emailNotif ? 'right-0.5 bg-white dark:bg-zinc-900' : 'left-0.5 bg-white dark:bg-zinc-400'}`}></div>
+                        </button>
                     </div>
                     <div className="flex items-center justify-between py-4 border-b border-slate-50 dark:border-zinc-800">
                         <div>
                             <p className="text-sm font-bold text-zinc-800 dark:text-zinc-200">Real-time Lead Alerts</p>
                             <p className="text-xs text-zinc-500">Desktop notifications for new leads</p>
                         </div>
-                        <div className="w-10 h-5 bg-zinc-200 dark:bg-zinc-700 rounded-full relative cursor-pointer">
-                            <div className="absolute top-0.5 left-0.5 w-4 h-4 bg-white dark:bg-zinc-900 rounded-full shadow-sm"></div>
-                        </div>
+                        <button
+                            onClick={() => setPrefs({ ...prefs, realtimeAlerts: !prefs.realtimeAlerts })}
+                            className={`w-10 h-5 rounded-full relative transition-colors ${prefs.realtimeAlerts ? 'bg-zinc-900 dark:bg-white' : 'bg-zinc-200 dark:bg-zinc-700'}`}
+                        >
+                            <div className={`absolute top-0.5 w-4 h-4 rounded-full shadow-sm transition-all ${prefs.realtimeAlerts ? 'right-0.5 bg-white dark:bg-zinc-900' : 'left-0.5 bg-white dark:bg-zinc-400'}`}></div>
+                        </button>
                     </div>
                 </div>
             </div>

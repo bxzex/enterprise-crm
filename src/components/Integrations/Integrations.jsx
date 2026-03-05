@@ -1,12 +1,32 @@
+import { useState, useEffect } from 'react';
 import { Share2, Terminal, Code2, Database, Zap } from 'lucide-react';
 
 const Integrations = () => {
-    const systems = [
-        { name: 'External Webhooks', icon: Zap, status: 'Connected', desc: 'Real-time data synchronization' },
-        { name: 'REST API Access', icon: Code2, status: 'Setup Required', desc: 'Integration with custom systems' },
-        { name: 'Database Sync', icon: Database, status: 'Disconnected', desc: 'Enterprise data warehousing' },
-        { name: 'System Logs', icon: Terminal, status: 'Normal', desc: 'Operation audit and tracking' },
-    ];
+    const [systems, setSystems] = useState(() => {
+        const saved = localStorage.getItem('crm_integrations');
+        return saved ? JSON.parse(saved) : [
+            { id: 1, name: 'External Webhooks', icon: 'Zap', status: 'Connected', desc: 'Real-time data synchronization' },
+            { id: 2, name: 'REST API Access', icon: 'Code2', status: 'Setup Required', desc: 'Integration with custom systems' },
+            { id: 3, name: 'Database Sync', icon: 'Database', status: 'Disconnected', desc: 'Enterprise data warehousing' },
+            { id: 4, name: 'System Logs', icon: 'Terminal', status: 'Normal', desc: 'Operation audit and tracking' },
+        ];
+    });
+
+    useEffect(() => {
+        localStorage.setItem('crm_integrations', JSON.stringify(systems));
+    }, [systems]);
+
+    const icons = { Zap, Code2, Database, Terminal };
+
+    const toggleStatus = (id) => {
+        setSystems(prev => prev.map(s => {
+            if (s.id === id) {
+                const nextStatus = s.status === 'Connected' ? 'Disconnected' : 'Connected';
+                return { ...s, status: nextStatus };
+            }
+            return s;
+        }));
+    };
 
     return (
         <div className="max-w-[1000px] mx-auto space-y-8">
@@ -24,25 +44,31 @@ const Integrations = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {systems.map((sys, idx) => (
-                    <div key={idx} className="bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-slate-200 dark:border-zinc-800 shadow-sm flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <div className="p-3 bg-zinc-50 dark:bg-zinc-800 rounded-xl">
-                                <sys.icon size={22} className="text-zinc-900 dark:text-white" />
+                {systems.map((sys) => {
+                    const Icon = icons[sys.icon];
+                    return (
+                        <div key={sys.id} className="bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-slate-200 dark:border-zinc-800 shadow-sm flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <div className="p-3 bg-zinc-50 dark:bg-zinc-800 rounded-xl">
+                                    <Icon size={22} className="text-zinc-900 dark:text-white" />
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-zinc-900 dark:text-white mb-0.5">{sys.name}</h4>
+                                    <p className="text-xs text-zinc-500 font-medium">{sys.desc}</p>
+                                </div>
                             </div>
-                            <div>
-                                <h4 className="font-bold text-zinc-900 dark:text-white mb-0.5">{sys.name}</h4>
-                                <p className="text-xs text-zinc-500 font-medium">{sys.desc}</p>
-                            </div>
+                            <button
+                                onClick={() => toggleStatus(sys.id)}
+                                className={`text-[10px] font-black uppercase px-2 py-1 rounded-full transition-all active:scale-95 ${sys.status === 'Connected' ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400' :
+                                    sys.status === 'Normal' ? 'bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400' :
+                                        'bg-zinc-100 text-zinc-400 dark:bg-zinc-800 dark:text-zinc-500'
+                                    }`}
+                            >
+                                {sys.status}
+                            </button>
                         </div>
-                        <span className={`text-[10px] font-black uppercase px-2 py-1 rounded-full ${sys.status === 'Connected' ? 'bg-emerald-50 text-emerald-600' :
-                                sys.status === 'Normal' ? 'bg-blue-50 text-blue-600' :
-                                    'bg-zinc-100 text-zinc-400'
-                            }`}>
-                            {sys.status}
-                        </span>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
         </div>
     );
