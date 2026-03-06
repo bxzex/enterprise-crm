@@ -1,38 +1,39 @@
-# Enterprise CRM
+# VoltCraft Enterprise CRM
 
-A professional, high-performance Enterprise CRM solution built for modern sales and client management. This application is designed to be fully functional without any backend requirements, utilizing browser-native persistent storage for data privacy and speed.
+A high-performance, premium Enterprise CRM solution designed for elite sales and client management. Built with a modern glassmorphism design system using Tailwind CSS v4 and Framer Motion.
 
-## Features
+## Premium Features
 
-- **Dashboard:** Real-time stats on clients, leads, revenue, and tasks.
-- **Client Management:** Full CRUD (Create, Read, Update, Delete) for corporate accounts with status tracking.
-- **Lead Pipeline:** Track deal values, sources, and conversion status.
-- **Task Management:** Organize daily activities with priority levels and due dates.
-- **Settings:** Customize workspace preferences and manage local data.
-- **Local Persistence:** All data is saved to `localStorage`. No external API calls or database required.
-- **Export Functionality:** Export your client data to JSON for backups.
+- **Executive Dashboard:** Interactive revenue flow charts and conversion analytics powered by Recharts.
+- **Enterprise Portfolio:** Sophisticated partner indexing with full CRUD operations.
+- **Sales Pipeline:** Target-based deal tracking with projected valuation and funnel stages.
+- **Operational Directives:** Urgency-based task management with priority-level execution.
+- **System Core:** Professional-grade configuration for organization ID and master admin protocols.
+- **Local Sovereignty:** 100% backend-free. Data is persisted exclusively via browser-native nodes (`localStorage`).
 
 ## Tech Stack
 
-- **Frontend:** React + TypeScript
+- **Framework:** React + TypeScript
+- **Styling:** Tailwind CSS v4 (Modern Design System)
+- **Analytics:** Recharts (Data Visualization)
+- **Animations:** Framer Motion (Premium Interactions)
 - **Icons:** Lucide-React
 - **Routing:** React-Router-Dom
-- **Styling:** Vanilla CSS (Enterprise design system)
-- **Build Tool:** Vite
+- **Build Engine:** Vite
 
-## Built By
+## Engineering
 
-This project was built by **bxzex**.
+This project was engineered by **bxzex**.
 
 ## License
 
-This project is Open Source. You are free to use, modify, and distribute it.
+This project is Open Source (MIT). You are free to use, modify, and distribute it.
 
 ---
 
-### Getting Started
+### Deployment
 
-1. Clone the repository
-2. Install dependencies: `npm install`
-3. Run in development: `npm run dev`
-4. Build for production: `npm run build`
+1. `npm install`
+2. `npm run dev` (Local development)
+3. `npm run build` (Production build)
+4. `npm run deploy` (GitHub Pages automation)

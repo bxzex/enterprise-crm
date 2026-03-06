@@ -7,7 +7,8 @@ import {
   ArrowUpRight, 
   ArrowDownRight,
   MoreVertical,
-  Calendar
+  Calendar,
+  ChevronRight
 } from 'lucide-react'
 import { getStorage, Client, Lead } from '../utils/storage'
 import { 
