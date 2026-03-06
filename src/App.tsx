@@ -10,7 +10,10 @@ import {
   Bell,
   Search,
   ChevronRight,
-  LogOut
+  LogOut,
+  Github,
+  Linkedin,
+  Instagram
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { getStorage } from './utils/storage'
@@ -88,18 +91,53 @@ function App() {
             </NavLink>
           </nav>
 
-          <div className="mt-auto pt-6 border-t border-white/5 space-y-4">
-            <div className="bg-white/5 rounded-2xl p-4">
+          <div className="mt-auto pt-6 border-t border-white/5 space-y-2">
+            <div className="bg-white/5 rounded-2xl p-4 mb-2">
               <p className="text-xs text-slate-500 mb-1">Storage Usage</p>
               <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
                 <div className="h-full bg-accent w-1/3 shadow-[0_0_10px_rgba(37,99,235,0.5)]"></div>
               </div>
               <p className="text-[10px] text-slate-400 mt-2">Local Mode Active</p>
             </div>
+
+            <a 
+              href="https://github.com/bxzex" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 text-slate-400 hover:text-white px-4 py-2 transition-colors w-full"
+            >
+              <Github size={18} />
+              <span className="text-sm font-medium">GitHub</span>
+            </a>
+
+            <a 
+              href="https://www.linkedin.com/in/bxzex/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 text-slate-400 hover:text-white px-4 py-2 transition-colors w-full"
+            >
+              <Linkedin size={18} />
+              <span className="text-sm font-medium">LinkedIn</span>
+            </a>
+
+            <a 
+              href="https://instagram.com/bxzex" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 text-slate-400 hover:text-white px-4 py-2 transition-colors w-full"
+            >
+              <Instagram size={18} />
+              <span className="text-sm font-medium">Instagram</span>
+            </a>
+
             <button className="flex items-center gap-3 text-slate-400 hover:text-white px-4 py-2 transition-colors w-full">
               <LogOut size={18} />
               <span className="text-sm font-medium">Sign Out</span>
             </button>
+
+            <div className="px-4 py-2 text-[10px] text-slate-500 font-bold uppercase tracking-widest text-center opacity-50">
+              Developed by bxzex
+            </div>
           </div>
         </aside>
 
