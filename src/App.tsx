@@ -8,8 +8,11 @@ import {
   Settings, 
   Briefcase,
   Bell,
-  Search
+  Search,
+  ChevronRight,
+  LogOut
 } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 // Pages
 import Dashboard from './pages/Dashboard'
@@ -21,70 +24,106 @@ import SettingsPage from './pages/Settings'
 function App() {
   return (
     <Router>
-      <div className="app-container">
-        {/* Sidebar */}
-        <aside className="sidebar">
-          <div className="sidebar-header">
-            <Briefcase size={28} color="#2563eb" />
-            <span>Enterprise CRM</span>
+      <div className="flex h-screen w-screen bg-slate-50 overflow-hidden font-sans">
+        {/* Modern Sidebar */}
+        <aside className="w-72 bg-sidebar flex flex-col p-6 shadow-2xl z-20">
+          <div className="flex items-center gap-3 mb-10 px-2">
+            <div className="bg-accent p-2 rounded-xl shadow-lg shadow-accent/30 text-white">
+              <Briefcase size={24} />
+            </div>
+            <span className="text-xl font-bold text-white tracking-tight">VoltCraft CRM</span>
           </div>
-          <nav className="sidebar-nav">
-            <NavLink to="/" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+
+          <nav className="flex-1 space-y-2">
+            <NavLink to="/" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
               <LayoutDashboard size={20} />
-              <span>Dashboard</span>
+              <span className="font-medium">Overview</span>
             </NavLink>
-            <NavLink to="/clients" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+            <NavLink to="/clients" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
               <Users size={20} />
-              <span>Clients</span>
+              <span className="font-medium">Enterprise Clients</span>
             </NavLink>
-            <NavLink to="/leads" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+            <NavLink to="/leads" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
               <UserPlus size={20} />
-              <span>Leads</span>
+              <span className="font-medium">Sales Pipeline</span>
             </NavLink>
-            <NavLink to="/tasks" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+            <NavLink to="/tasks" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
               <CheckSquare size={20} />
-              <span>Tasks</span>
+              <span className="font-medium">Operations</span>
             </NavLink>
-            <NavLink to="/settings" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+            <NavLink to="/settings" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
               <Settings size={20} />
-              <span>Settings</span>
+              <span className="font-medium">System Prefs</span>
             </NavLink>
           </nav>
-          <div style={{ padding: '24px', borderTop: '1px solid rgba(255,255,255,0.1)', fontSize: '0.75rem', opacity: 0.5 }}>
-            © 2026 bxzex CRM
+
+          <div className="mt-auto pt-6 border-t border-white/5 space-y-4">
+            <div className="bg-white/5 rounded-2xl p-4">
+              <p className="text-xs text-slate-500 mb-1">Storage Usage</p>
+              <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+                <div className="h-full bg-accent w-1/3 shadow-[0_0_10px_rgba(37,99,235,0.5)]"></div>
+              </div>
+              <p className="text-[10px] text-slate-400 mt-2">Local Mode Active</p>
+            </div>
+            <button className="flex items-center gap-3 text-slate-400 hover:text-white px-4 py-2 transition-colors w-full">
+              <LogOut size={18} />
+              <span className="text-sm font-medium">Sign Out</span>
+            </button>
           </div>
         </aside>
 
-        {/* Main Content */}
-        <main className="main-content">
-          <header style={{ display: 'flex', justifyContent: 'flex-end', gap: '20px', marginBottom: '32px', alignItems: 'center' }}>
-            <div style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>
-              <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+        {/* Main Content Area */}
+        <main className="flex-1 flex flex-col overflow-hidden relative">
+          {/* Header */}
+          <header className="h-20 bg-white/50 backdrop-blur-xl border-b border-slate-200 px-8 flex items-center justify-between z-10">
+            <div className="relative w-96 group">
+              <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-accent transition-colors" />
               <input 
                 type="text" 
-                placeholder="Search everything..." 
-                style={{ width: '100%', padding: '10px 10px 10px 40px', border: '1px solid var(--border)', borderRadius: '8px', outline: 'none' }}
+                placeholder="Search resources, leads, or tasks..." 
+                className="w-full bg-slate-100 border-none rounded-2xl py-2.5 pl-12 pr-4 focus:ring-2 focus:ring-accent/20 focus:bg-white transition-all text-sm outline-none"
               />
             </div>
-            <button className="btn-outline" style={{ padding: '8px', borderRadius: '50%' }}><Bell size={20} /></button>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ fontWeight: 600, fontSize: '0.875rem' }}>bxzex Admin</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Enterprise Plan</div>
-              </div>
-              <div style={{ width: '40px', height: '40px', background: 'var(--primary)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold' }}>
-                <span style={{ margin: 'auto' }}>BX</span>
+
+            <div className="flex items-center gap-6">
+              <button className="relative p-2 text-slate-500 hover:text-accent transition-colors">
+                <Bell size={22} />
+                <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+              </button>
+              
+              <div className="h-10 w-[1px] bg-slate-200"></div>
+
+              <div className="flex items-center gap-3">
+                <div className="text-right hidden sm:block">
+                  <p className="text-sm font-bold text-slate-900 leading-none">bxzex Admin</p>
+                  <p className="text-[11px] font-medium text-slate-500 mt-1 uppercase tracking-wider">Super Administrator</p>
+                </div>
+                <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-accent/20 ring-2 ring-white">
+                  BX
+                </div>
               </div>
             </div>
           </header>
 
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/clients" element={<Clients />} />
-            <Route path="/leads" element={<Leads />} />
-            <Route path="/tasks" element={<Tasks />} />
-            <Route path="/settings" element={<SettingsPage />} />
-          </Routes>
+          {/* Content Wrapper */}
+          <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+            <AnimatePresence mode="wait">
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Routes>
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/clients" element={<Clients />} />
+                  <Route path="/leads" element={<Leads />} />
+                  <Route path="/tasks" element={<Tasks />} />
+                  <Route path="/settings" element={<SettingsPage />} />
+                </Routes>
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </main>
       </div>
     </Router>

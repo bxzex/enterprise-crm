@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Plus, CheckCircle, Circle, Trash2, X } from 'lucide-react'
+import { Plus, CheckCircle, Circle, Trash2, X, Clock, AlertTriangle, CheckSquare } from 'lucide-react'
 import { getStorage, setStorage, Task } from '../utils/storage'
+import { motion, AnimatePresence } from 'framer-motion'
 
 const Tasks = () => {
   const [tasks, setTasks] = useState<Task[]>([])
@@ -42,95 +43,151 @@ const Tasks = () => {
   }
 
   return (
-    <div>
-      <div className="page-header">
-        <div className="page-title">
-          <h1>Tasks</h1>
-          <p>Organize your daily activities and stay on top of your deals.</p>
+    <div className="space-y-8 pb-12">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Operations</h1>
+          <p className="text-slate-500 font-medium mt-1">High-priority task execution and workflow management.</p>
         </div>
-        <button className="btn btn-primary" onClick={() => setIsModalOpen(true)}><Plus size={18} /> New Task</button>
+        <button className="btn-primary flex items-center gap-2" onClick={() => setIsModalOpen(true)}>
+          <Plus size={18} />
+          New Directive
+        </button>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
-        <div className="card">
-          <h2 style={{ fontSize: '1.125rem', marginBottom: '20px' }}>Active Tasks</h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Active Tasks Column */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between px-2">
+            <h2 className="text-sm font-black uppercase tracking-[0.2em] text-slate-400">Active Directives</h2>
+            <span className="bg-slate-200 text-slate-600 text-[10px] font-black px-2 py-0.5 rounded-full">
+              {tasks.filter(t => !t.completed).length}
+            </span>
+          </div>
+          
+          <div className="space-y-3">
             {tasks.filter(t => !t.completed).length === 0 ? (
-              <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '20px' }}>No active tasks.</p>
+              <div className="glass-card p-12 text-center text-slate-400 font-medium italic">
+                All systems operational. No pending directives.
+              </div>
             ) : tasks.filter(t => !t.completed).map(task => (
-              <div key={task.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', background: '#f8fafc', borderRadius: '8px' }}>
-                <button onClick={() => toggleTask(task.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}>
-                  <Circle size={20} />
+              <motion.div 
+                layout
+                key={task.id} 
+                className={`glass-card p-4 flex items-center gap-4 group border-l-4 ${
+                  task.priority === 'High' ? 'border-l-rose-500' : 
+                  task.priority === 'Medium' ? 'border-l-orange-500' : 'border-l-slate-300'
+                }`}
+              >
+                <button 
+                  onClick={() => toggleTask(task.id)} 
+                  className="w-6 h-6 rounded-full border-2 border-slate-200 flex items-center justify-center text-transparent hover:border-accent hover:text-accent transition-all shrink-0"
+                >
+                  <Circle size={14} fill="currentColor" className="opacity-0 hover:opacity-20" />
                 </button>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 600 }}>{task.title}</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Due: {task.dueDate} • <span style={{ color: task.priority === 'High' ? 'var(--danger)' : 'inherit' }}>{task.priority} Priority</span></div>
+                <div className="flex-1">
+                  <p className="text-sm font-bold text-slate-900 leading-tight">{task.title}</p>
+                  <div className="flex items-center gap-3 mt-1 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    <span className="flex items-center gap-1"><Clock size={12} /> {task.dueDate}</span>
+                    <span className={`flex items-center gap-1 ${task.priority === 'High' ? 'text-rose-500' : ''}`}>
+                      <AlertTriangle size={12} /> {task.priority} Priority
+                    </span>
+                  </div>
                 </div>
-                <button onClick={() => deleteTask(task.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', opacity: 0.5 }}>
+                <button onClick={() => deleteTask(task.id)} className="opacity-0 group-hover:opacity-100 p-2 text-slate-300 hover:text-rose-500 transition-all">
                   <Trash2 size={16} />
                 </button>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
 
-        <div className="card">
-          <h2 style={{ fontSize: '1.125rem', marginBottom: '20px' }}>Recently Completed</h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        {/* Completed Column */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between px-2">
+            <h2 className="text-sm font-black uppercase tracking-[0.2em] text-slate-400">Archive Log</h2>
+            <span className="bg-slate-200 text-slate-600 text-[10px] font-black px-2 py-0.5 rounded-full">
+              {tasks.filter(t => t.completed).length}
+            </span>
+          </div>
+
+          <div className="space-y-3">
             {tasks.filter(t => t.completed).length === 0 ? (
-              <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '20px' }}>No completed tasks.</p>
+              <div className="glass-card p-12 text-center text-slate-400 font-medium italic">
+                Archive log is currently empty.
+              </div>
             ) : tasks.filter(t => t.completed).map(task => (
-              <div key={task.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', background: '#f1f5f9', borderRadius: '8px', opacity: 0.7 }}>
-                <button onClick={() => toggleTask(task.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--success)' }}>
-                  <CheckCircle size={20} />
+              <motion.div 
+                layout
+                key={task.id} 
+                className="glass-card p-4 flex items-center gap-4 group opacity-60 bg-slate-50/50"
+              >
+                <button 
+                  onClick={() => toggleTask(task.id)} 
+                  className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center text-white shrink-0"
+                >
+                  <CheckCircle size={14} />
                 </button>
-                <div style={{ flex: 1, textDecoration: 'line-through' }}>
-                  <div style={{ fontWeight: 600 }}>{task.title}</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Completed</div>
+                <div className="flex-1">
+                  <p className="text-sm font-bold text-slate-500 line-through leading-tight">{task.title}</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">Verified & Archived</p>
                 </div>
-                <button onClick={() => deleteTask(task.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', opacity: 0.5 }}>
+                <button onClick={() => deleteTask(task.id)} className="opacity-0 group-hover:opacity-100 p-2 text-slate-300 hover:text-rose-500 transition-all">
                   <Trash2 size={16} />
                 </button>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
       </div>
 
-      {isModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-              <h2 style={{ margin: 0 }}>Create Task</h2>
-              <button onClick={() => setIsModalOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X /></button>
-            </div>
-            <form onSubmit={handleSave}>
-              <div className="form-group">
-                <label>Task Title</label>
-                <input required type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} placeholder="e.g. Follow up with Acme Corp" />
+      <AnimatePresence>
+        {isModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setIsModalOpen(false)} className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" 
+            />
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden"
+            >
+              <div className="p-8 border-b border-slate-100">
+                <h2 className="text-2xl font-black text-slate-900 tracking-tight">New Directive</h2>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                <div className="form-group">
-                  <label>Priority</label>
-                  <select value={formData.priority} onChange={e => setFormData({...formData, priority: e.target.value as any})}>
-                    <option value="Low">Low</option>
-                    <option value="Medium">Medium</option>
-                    <option value="High">High</option>
-                  </select>
+              <form onSubmit={handleSave} className="p-8 space-y-6">
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Description</label>
+                  <input required type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="input-field" placeholder="Execution details..." />
                 </div>
-                <div className="form-group">
-                  <label>Due Date</label>
-                  <input required type="date" value={formData.dueDate} onChange={e => setFormData({...formData, dueDate: e.target.value})} />
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Urgency</label>
+                    <select value={formData.priority} onChange={e => setFormData({...formData, priority: e.target.value as any})} className="input-field appearance-none">
+                      <option value="Low">Standard</option>
+                      <option value="Medium">Elevated</option>
+                      <option value="High">Critical</option>
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Deadline</label>
+                    <input required type="date" value={formData.dueDate} onChange={e => setFormData({...formData, dueDate: e.target.value})} className="input-field" />
+                  </div>
                 </div>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '32px' }}>
-                <button type="button" className="btn btn-outline" onClick={() => setIsModalOpen(false)}>Cancel</button>
-                <button type="submit" className="btn btn-primary">Create Task</button>
-              </div>
-            </form>
+                <div className="pt-4 flex gap-3">
+                  <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 px-6 py-3 border border-slate-200 rounded-2xl font-bold text-slate-600 hover:bg-slate-50 transition-colors">Abort</button>
+                  <button type="submit" className="flex-[2] btn-primary py-3 rounded-2xl flex items-center justify-center gap-2">
+                    <CheckSquare size={18} />
+                    Issue Directive
+                  </button>
+                </div>
+              </form>
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
     </div>
   )
 }

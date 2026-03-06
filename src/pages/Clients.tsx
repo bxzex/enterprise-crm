@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { Plus, Edit2, Trash2, X, Download } from 'lucide-react'
+import { Plus, Edit2, Trash2, X, Download, Search, Mail, Building2, ExternalLink } from 'lucide-react'
 import { getStorage, setStorage, Client } from '../utils/storage'
+import { motion, AnimatePresence } from 'framer-motion'
 
 const Clients = () => {
   const [clients, setClients] = useState<Client[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingClient, setEditingClient] = useState<Client | null>(null)
+  const [searchTerm, setSearchSearchTerm] = useState('')
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -36,7 +38,7 @@ const Clients = () => {
   }
 
   const handleDelete = (id: string) => {
-    if (window.confirm('Are you sure you want to delete this client?')) {
+    if (window.confirm('Confirm permanent deletion of this partner profile?')) {
       const updated = clients.filter(c => c.id !== id)
       setClients(updated)
       setStorage('clients', updated)
@@ -64,105 +66,157 @@ const Clients = () => {
     setEditingClient(null)
   }
 
-  const exportData = () => {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(clients));
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href",     dataStr);
-    downloadAnchorNode.setAttribute("download", "clients_export.json");
-    document.body.appendChild(downloadAnchorNode);
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
-  }
+  const filteredClients = clients.filter(c => 
+    c.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    c.company.toLowerCase().includes(searchTerm.toLowerCase())
+  )
 
   return (
-    <div>
-      <div className="page-header">
-        <div className="page-title">
-          <h1>Clients</h1>
-          <p>Manage your corporate relationships and key accounts.</p>
+    <div className="space-y-8 pb-12">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Enterprise Portfolio</h1>
+          <p className="text-slate-500 font-medium mt-1">High-value corporate accounts and strategic relationships.</p>
         </div>
-        <div style={{ display: 'flex', gap: '12px' }}>
-          <button className="btn btn-outline" onClick={exportData}><Download size={18} /> Export</button>
-          <button className="btn btn-primary" onClick={() => openModal()}><Plus size={18} /> Add Client</button>
+        <div className="flex items-center gap-3">
+          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors shadow-sm">
+            <Download size={16} />
+            Data Export
+          </button>
+          <button className="btn-primary flex items-center gap-2" onClick={() => openModal()}>
+            <Plus size={18} />
+            Onboard Partner
+          </button>
         </div>
       </div>
 
-      <div className="card" style={{ padding: '0' }}>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Company</th>
-              <th>Email</th>
-              <th>Status</th>
-              <th style={{ textAlign: 'right' }}>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {clients.length === 0 ? (
-              <tr>
-                <td colSpan={5} style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>
-                  No clients found. Click "Add Client" to get started.
-                </td>
-              </tr>
-            ) : clients.map(client => (
-              <tr key={client.id}>
-                <td style={{ fontWeight: 600 }}>{client.name}</td>
-                <td>{client.company}</td>
-                <td>{client.email}</td>
-                <td>
-                  <span className={`badge badge-${client.status.toLowerCase() === 'active' ? 'success' : client.status.toLowerCase() === 'pending' ? 'warning' : 'danger'}`}>
-                    {client.status}
-                  </span>
-                </td>
-                <td style={{ textAlign: 'right' }}>
-                  <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
-                    <button className="btn-outline" style={{ padding: '6px', borderRadius: '4px' }} onClick={() => openModal(client)}><Edit2 size={14} /></button>
-                    <button className="btn-outline" style={{ padding: '6px', borderRadius: '4px', color: 'var(--danger)' }} onClick={() => handleDelete(client.id)}><Trash2 size={14} /></button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {isModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-              <h2 style={{ margin: 0 }}>{editingClient ? 'Edit Client' : 'Add New Client'}</h2>
-              <button onClick={closeModal} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X /></button>
-            </div>
-            <form onSubmit={handleSave}>
-              <div className="form-group">
-                <label>Full Name</label>
-                <input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
-              </div>
-              <div className="form-group">
-                <label>Company</label>
-                <input required type="text" value={formData.company} onChange={e => setFormData({...formData, company: e.target.value})} />
-              </div>
-              <div className="form-group">
-                <label>Email Address</label>
-                <input required type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
-              </div>
-              <div className="form-group">
-                <label>Status</label>
-                <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value as any})}>
-                  <option value="Active">Active</option>
-                  <option value="Pending">Pending</option>
-                  <option value="Inactive">Inactive</option>
-                </select>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '32px' }}>
-                <button type="button" className="btn btn-outline" onClick={closeModal}>Cancel</button>
-                <button type="submit" className="btn btn-primary">Save Client</button>
-              </div>
-            </form>
+      <div className="glass-card overflow-hidden">
+        <div className="p-6 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-50/50">
+          <div className="relative w-full md:w-96">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+            <input 
+              type="text" 
+              placeholder="Search partner index..." 
+              value={searchTerm}
+              onChange={e => setSearchSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-accent/20 outline-none transition-all"
+            />
+          </div>
+          <div className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
+            Displaying {filteredClients.length} Entities
           </div>
         </div>
-      )}
+
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="bg-slate-50/50 text-left">
+                <th className="px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Identity</th>
+                <th className="px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Corporation</th>
+                <th className="px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Network</th>
+                <th className="px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Status</th>
+                <th className="px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-right">Operations</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {filteredClients.map(client => (
+                <tr key={client.id} className="hover:bg-slate-50/80 transition-colors group">
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center font-bold text-slate-500 group-hover:bg-accent group-hover:text-white transition-colors">
+                        {client.name.charAt(0)}
+                      </div>
+                      <div>
+                        <p className="text-sm font-black text-slate-900 leading-tight">{client.name}</p>
+                        <p className="text-xs text-slate-400 font-medium">ID: #{client.id.slice(-4)}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-2 text-sm font-bold text-slate-600">
+                      <Building2 size={14} className="text-slate-400" />
+                      {client.company}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-2 text-sm font-medium text-slate-500">
+                      <Mail size={14} className="text-slate-400" />
+                      {client.email}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider
+                      ${client.status === 'Active' ? 'bg-emerald-100 text-emerald-600' : 
+                        client.status === 'Pending' ? 'bg-orange-100 text-orange-600' : 'bg-slate-100 text-slate-600'}`}>
+                      {client.status}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button onClick={() => openModal(client)} className="p-2 hover:bg-white rounded-lg border border-transparent hover:border-slate-200 text-slate-400 hover:text-accent transition-all">
+                        <Edit2 size={16} />
+                      </button>
+                      <button onClick={() => handleDelete(client.id)} className="p-2 hover:bg-white rounded-lg border border-transparent hover:border-slate-200 text-slate-400 hover:text-rose-500 transition-all">
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {isModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={closeModal} className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" 
+            />
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden"
+            >
+              <div className="p-8 border-b border-slate-100 flex justify-between items-center">
+                <h2 className="text-2xl font-black text-slate-900 tracking-tight">{editingClient ? 'Edit Profile' : 'New Partner'}</h2>
+                <button onClick={closeModal} className="p-2 hover:bg-slate-100 rounded-xl transition-colors"><X size={20} /></button>
+              </div>
+              <form onSubmit={handleSave} className="p-8 space-y-6">
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Legal Name</label>
+                  <input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="input-field" placeholder="Full legal name..." />
+                </div>
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Organization</label>
+                    <input required type="text" value={formData.company} onChange={e => setFormData({...formData, company: e.target.value})} className="input-field" placeholder="Company..." />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Relation Status</label>
+                    <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value as any})} className="input-field appearance-none">
+                      <option value="Active">Strategic Active</option>
+                      <option value="Pending">Negotiation</option>
+                      <option value="Inactive">Archived</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Encrypted Communication</label>
+                  <input required type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="input-field" placeholder="business@domain.com" />
+                </div>
+                <div className="pt-4 flex gap-3">
+                  <button type="button" onClick={closeModal} className="flex-1 px-6 py-3 border border-slate-200 rounded-2xl font-bold text-slate-600 hover:bg-slate-50 transition-colors">Abort</button>
+                  <button type="submit" className="flex-[2] btn-primary py-3 rounded-2xl">Deploy Partner Profile</button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

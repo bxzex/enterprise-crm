@@ -5,9 +5,32 @@ import {
   DollarSign, 
   Clock, 
   ArrowUpRight, 
-  ArrowDownRight 
+  ArrowDownRight,
+  MoreVertical,
+  Calendar
 } from 'lucide-react'
 import { getStorage, Client, Lead } from '../utils/storage'
+import { 
+  AreaChart, 
+  Area, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer,
+  BarChart,
+  Bar
+} from 'recharts'
+
+const data = [
+  { name: 'Mon', revenue: 4000, leads: 24 },
+  { name: 'Tue', revenue: 3000, leads: 13 },
+  { name: 'Wed', revenue: 2000, leads: 98 },
+  { name: 'Thu', revenue: 2780, leads: 39 },
+  { name: 'Fri', revenue: 1890, leads: 48 },
+  { name: 'Sat', revenue: 2390, leads: 38 },
+  { name: 'Sun', revenue: 3490, leads: 43 },
+]
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
@@ -31,89 +54,129 @@ const Dashboard = () => {
   }, [])
 
   return (
-    <div>
-      <div className="page-header">
-        <div className="page-title">
-          <h1>Enterprise Dashboard</h1>
-          <p>Welcome back, here's what's happening today.</p>
+    <div className="space-y-8 pb-12">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Overview</h1>
+          <p className="text-slate-500 font-medium mt-1">Global performance metrics and sales intelligence.</p>
         </div>
-        <button className="btn btn-primary">Generate Report</button>
-      </div>
-
-      <div className="stats-grid">
-        <div className="card stat-card">
-          <div className="stat-icon" style={{ background: '#dbeafe', color: '#2563eb' }}>
-            <Users size={24} />
-          </div>
-          <div className="stat-info">
-            <h3>Total Clients</h3>
-            <p>{stats.totalClients}</p>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', color: 'var(--success)', marginTop: '4px' }}>
-              <ArrowUpRight size={14} /> <span>12% from last month</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="card stat-card">
-          <div className="stat-icon" style={{ background: '#fef3c7', color: '#d97706' }}>
-            <TrendingUp size={24} />
-          </div>
-          <div className="stat-info">
-            <h3>Active Leads</h3>
-            <p>{stats.totalLeads}</p>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', color: 'var(--success)', marginTop: '4px' }}>
-              <ArrowUpRight size={14} /> <span>5% from last month</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="card stat-card">
-          <div className="stat-icon" style={{ background: '#dcfce7', color: '#059669' }}>
-            <DollarSign size={24} />
-          </div>
-          <div className="stat-info">
-            <h3>Pipeline Value</h3>
-            <p>${stats.totalRevenue.toLocaleString()}</p>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', color: 'var(--success)', marginTop: '4px' }}>
-              <ArrowUpRight size={14} /> <span>24% from last month</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="card stat-card">
-          <div className="stat-icon" style={{ background: '#fee2e2', color: '#dc2626' }}>
-            <Clock size={24} />
-          </div>
-          <div className="stat-info">
-            <h3>Pending Tasks</h3>
-            <p>{stats.pendingTasks}</p>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', color: 'var(--danger)', marginTop: '4px' }}>
-              <ArrowDownRight size={14} /> <span>2 tasks overdue</span>
-            </div>
-          </div>
+        <div className="flex items-center gap-3">
+          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors shadow-sm">
+            <Calendar size={16} />
+            Last 30 Days
+          </button>
+          <button className="btn-primary">
+            Export Intelligence
+          </button>
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px' }}>
-        <div className="card">
-          <h2 style={{ fontSize: '1.125rem', marginBottom: '20px' }}>Recent Performance</h2>
-          <div style={{ height: '300px', background: '#f8fafc', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
-            [Interactive Chart Placeholder]
-          </div>
-        </div>
-        <div className="card">
-          <h2 style={{ fontSize: '1.125rem', marginBottom: '20px' }}>Activity Stream</h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {[1,2,3,4].map(i => (
-              <div key={i} style={{ display: 'flex', gap: '12px', fontSize: '0.875rem', borderBottom: i < 4 ? '1px solid var(--border)' : 'none', paddingBottom: '12px' }}>
-                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--primary)', marginTop: '6px' }}></div>
-                <div>
-                  <div style={{ fontWeight: 600 }}>New lead qualified</div>
-                  <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>2 hours ago by System</div>
-                </div>
+      {/* Modern Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[
+          { label: 'Market Capital', value: `$${stats.totalRevenue.toLocaleString()}`, icon: DollarSign, color: 'bg-emerald-500', trend: '+24.5%', positive: true },
+          { label: 'Active Pipeline', value: stats.totalLeads, icon: TrendingUp, color: 'bg-blue-500', trend: '+12.3%', positive: true },
+          { label: 'Strategic Partners', value: stats.totalClients, icon: Users, color: 'bg-violet-500', trend: '-2.1%', positive: false },
+          { label: 'Ops Velocity', value: stats.pendingTasks, icon: Clock, color: 'bg-orange-500', trend: '+4.4%', positive: true },
+        ].map((stat, i) => (
+          <div key={i} className="glass-card p-6 relative overflow-hidden group hover:shadow-xl transition-all duration-300">
+            <div className="flex justify-between items-start mb-4">
+              <div className={`${stat.color} p-3 rounded-2xl text-white shadow-lg`}>
+                <stat.icon size={22} />
               </div>
-            ))}
+              <div className={`flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full ${stat.positive ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'}`}>
+                {stat.positive ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
+                {stat.trend}
+              </div>
+            </div>
+            <h3 className="text-slate-500 text-xs font-black uppercase tracking-widest mb-1">{stat.label}</h3>
+            <p className="text-2xl font-black text-slate-900">{stat.value}</p>
+            <div className="absolute -bottom-4 -right-4 text-slate-100 opacity-0 group-hover:opacity-100 transition-opacity transform scale-150 pointer-events-none">
+              <stat.icon size={100} />
+            </div>
           </div>
+        ))}
+      </div>
+
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 glass-card p-8">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h2 className="text-xl font-black text-slate-900">Revenue Flow</h2>
+              <p className="text-sm text-slate-500 font-medium">Daily financial velocity tracking</p>
+            </div>
+            <button className="p-2 hover:bg-slate-100 rounded-lg transition-colors text-slate-400">
+              <MoreVertical size={20} />
+            </button>
+          </div>
+          <div className="h-[350px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={data}>
+                <defs>
+                  <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#2563eb" stopOpacity={0.1}/>
+                    <stop offset="95%" stopColor="#2563eb" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12, fontWeight: 600}} />
+                <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12, fontWeight: 600}} />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: '#fff', borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
+                />
+                <Area type="monotone" dataKey="revenue" stroke="#2563eb" strokeWidth={3} fillOpacity={1} fill="url(#colorRev)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        <div className="glass-card p-8">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-xl font-black text-slate-900">Conversion</h2>
+            <div className="w-2 h-2 bg-accent rounded-full animate-pulse"></div>
+          </div>
+          <div className="h-[350px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={data}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12, fontWeight: 600}} />
+                <Tooltip 
+                  cursor={{fill: '#f8fafc'}}
+                  contentStyle={{ backgroundColor: '#fff', borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
+                />
+                <Bar dataKey="leads" fill="#2563eb" radius={[6, 6, 6, 6]} barSize={12} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="mt-6 pt-6 border-t border-slate-100">
+            <div className="flex justify-between items-center text-sm font-bold">
+              <span className="text-slate-500 uppercase tracking-widest text-[10px]">Benchmark</span>
+              <span className="text-slate-900">84.2%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Activity Feed */}
+      <div className="glass-card p-8">
+        <h2 className="text-xl font-black text-slate-900 mb-6">Real-time Intelligence</h2>
+        <div className="space-y-6">
+          {[1,2,3].map(i => (
+            <div key={i} className="flex items-center gap-4 group cursor-pointer p-3 -m-3 hover:bg-slate-50 rounded-2xl transition-colors">
+              <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center text-slate-500 font-bold group-hover:bg-accent group-hover:text-white transition-colors shadow-sm">
+                AL
+              </div>
+              <div className="flex-1">
+                <div className="flex justify-between">
+                  <p className="text-sm font-black text-slate-900 tracking-tight">Acme Limited <span className="font-medium text-slate-400">upgraded to</span> Tier 3</p>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">2m ago</span>
+                </div>
+                <p className="text-xs text-slate-500 font-medium mt-0.5">Strategic account growth detected in North America sector.</p>
+              </div>
+              <ChevronRight size={18} className="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </div>
+          ))}
         </div>
       </div>
     </div>
