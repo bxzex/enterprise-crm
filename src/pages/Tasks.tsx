@@ -21,7 +21,8 @@ const Tasks = () => {
     const newTask: Task = {
       id: Date.now().toString(),
       ...formData,
-      completed: false
+      completed: false,
+      createdAt: new Date().toISOString()
     }
     const updated = [...tasks, newTask]
     setTasks(updated)

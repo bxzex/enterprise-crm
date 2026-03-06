@@ -46,6 +46,28 @@ const Leads = () => {
     }
   }
 
+  const handleConvert = (lead: Lead) => {
+    const clients = getStorage('clients', [])
+    const newClient = {
+      id: Date.now().toString(),
+      name: lead.name,
+      email: lead.email,
+      company: 'Individual', 
+      status: 'Active' as const,
+      createdAt: new Date().toISOString()
+    }
+    
+    // Add to clients
+    setStorage('clients', [...clients, newClient])
+    
+    // Remove from leads
+    const updatedLeads = leads.filter(l => l.id !== lead.id)
+    setLeads(updatedLeads)
+    setStorage('leads', updatedLeads)
+    
+    alert(`${lead.name} has been converted to a client!`)
+  }
+
   const openModal = (lead: Lead | null = null) => {
     if (lead) {
       setEditingLead(lead)
@@ -168,6 +190,16 @@ const Leads = () => {
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {lead.status === 'Qualified' && (
+                        <button 
+                          onClick={() => handleConvert(lead)} 
+                          className="text-emerald-500 hover:bg-emerald-50 p-1.5 rounded-lg transition-colors flex items-center gap-1 text-[10px] font-black uppercase tracking-widest"
+                          title="Convert to Client"
+                        >
+                          <Zap size={14} />
+                          Convert
+                        </button>
+                      )}
                       <button onClick={() => openModal(lead)} className="text-slate-400 hover:text-accent p-1.5"><Edit2 size={16} /></button>
                       <button onClick={() => handleDelete(lead.id)} className="text-slate-400 hover:text-rose-500 p-1.5"><Trash2 size={16} /></button>
                     </div>
