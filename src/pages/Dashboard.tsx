@@ -87,29 +87,22 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Modern Stats Grid */}
+      {/* Professional Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { label: 'Total Revenue', value: `$${stats.totalRevenue.toLocaleString()}`, icon: DollarSign, color: 'bg-emerald-500', trend: '+24.5%', positive: true },
-          { label: 'Active Leads', value: stats.totalLeads, icon: TrendingUp, color: 'bg-blue-500', trend: '+12.3%', positive: true },
-          { label: 'Total Clients', value: stats.totalClients, icon: Users, color: 'bg-violet-500', trend: '-2.1%', positive: false },
-          { label: 'Pending Tasks', value: stats.pendingTasks, icon: Clock, color: 'bg-orange-500', trend: '+4.4%', positive: true },
+          { label: 'Total Revenue', value: `$${stats.totalRevenue.toLocaleString()}`, icon: DollarSign, color: 'text-emerald-600', bgColor: 'bg-emerald-50' },
+          { label: 'Active Leads', value: stats.totalLeads, icon: TrendingUp, color: 'text-blue-600', bgColor: 'bg-blue-50' },
+          { label: 'Total Clients', value: stats.totalClients, icon: Users, color: 'text-violet-600', bgColor: 'bg-violet-50' },
+          { label: 'Pending Tasks', value: stats.pendingTasks, icon: Clock, color: 'text-orange-600', bgColor: 'bg-orange-50' },
         ].map((stat, i) => (
-          <div key={i} className="glass-card p-6 relative overflow-hidden group hover:shadow-xl transition-all duration-300">
+          <div key={i} className="glass-card p-6 group hover:border-slate-300 transition-all duration-200">
             <div className="flex justify-between items-start mb-4">
-              <div className={`${stat.color} p-3 rounded-2xl text-white shadow-lg`}>
-                <stat.icon size={22} />
-              </div>
-              <div className={`flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full ${stat.positive ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'}`}>
-                {stat.positive ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
-                {stat.trend}
+              <div className={`${stat.bgColor} ${stat.color} p-2.5 rounded-xl`}>
+                <stat.icon size={20} />
               </div>
             </div>
-            <h3 className="text-slate-500 text-xs font-black uppercase tracking-widest mb-1">{stat.label}</h3>
+            <h3 className="text-slate-500 text-xs font-bold uppercase tracking-wider mb-1">{stat.label}</h3>
             <p className="text-2xl font-black text-slate-900">{stat.value}</p>
-            <div className="absolute -bottom-4 -right-4 text-slate-100 opacity-0 group-hover:opacity-100 transition-opacity transform scale-150 pointer-events-none">
-              <stat.icon size={100} />
-            </div>
           </div>
         ))}
       </div>
