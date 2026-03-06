@@ -31,29 +31,29 @@ function App() {
             <div className="bg-accent p-2 rounded-xl shadow-lg shadow-accent/30 text-white">
               <Briefcase size={24} />
             </div>
-            <span className="text-xl font-bold text-white tracking-tight">VoltCraft CRM</span>
+            <span className="text-xl font-bold text-white tracking-tight">Enterprise CRM</span>
           </div>
 
           <nav className="flex-1 space-y-2">
             <NavLink to="/" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
               <LayoutDashboard size={20} />
-              <span className="font-medium">Overview</span>
+              <span className="font-medium">Dashboard</span>
             </NavLink>
             <NavLink to="/clients" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
               <Users size={20} />
-              <span className="font-medium">Enterprise Clients</span>
+              <span className="font-medium">Clients</span>
             </NavLink>
             <NavLink to="/leads" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
               <UserPlus size={20} />
-              <span className="font-medium">Sales Pipeline</span>
+              <span className="font-medium">Leads</span>
             </NavLink>
             <NavLink to="/tasks" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
               <CheckSquare size={20} />
-              <span className="font-medium">Operations</span>
+              <span className="font-medium">Tasks</span>
             </NavLink>
             <NavLink to="/settings" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
               <Settings size={20} />
-              <span className="font-medium">System Prefs</span>
+              <span className="font-medium">Settings</span>
             </NavLink>
           </nav>
 
@@ -95,11 +95,11 @@ function App() {
 
               <div className="flex items-center gap-3">
                 <div className="text-right hidden sm:block">
-                  <p className="text-sm font-bold text-slate-900 leading-none">bxzex Admin</p>
-                  <p className="text-[11px] font-medium text-slate-500 mt-1 uppercase tracking-wider">Super Administrator</p>
+                  <p className="text-sm font-bold text-slate-900 leading-none">Admin User</p>
+                  <p className="text-[11px] font-medium text-slate-500 mt-1 uppercase tracking-wider">System Administrator</p>
                 </div>
                 <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-accent/20 ring-2 ring-white">
-                  BX
+                  AD
                 </div>
               </div>
             </div>

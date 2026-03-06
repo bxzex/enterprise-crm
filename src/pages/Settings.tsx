@@ -5,8 +5,8 @@ import { motion } from 'framer-motion'
 
 const SettingsPage = () => {
   const [settings, setSettings] = useState({
-    companyName: 'bxzex Enterprise',
-    adminEmail: 'admin@bxzex.com',
+    companyName: 'Enterprise CRM',
+    adminEmail: 'admin@example.com',
     notifications: true,
     darkMode: false,
     autoSave: true
@@ -18,11 +18,11 @@ const SettingsPage = () => {
 
   const handleSave = () => {
     setStorage('app_settings', settings)
-    alert('System configuration synchronized successfully.')
+    alert('Settings saved successfully.')
   }
 
   const clearAllData = () => {
-    if (window.confirm('CRITICAL: This will initiate a full factory reset and wipe all local databases. Proceed?')) {
+    if (window.confirm('WARNING: This will delete all your data permanently. Are you sure?')) {
       localStorage.clear()
       window.location.reload()
     }
@@ -32,12 +32,12 @@ const SettingsPage = () => {
     <div className="space-y-8 pb-12 max-w-4xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">System Core</h1>
-          <p className="text-slate-500 font-medium mt-1">Configure environment variables and security protocols.</p>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Settings</h1>
+          <p className="text-slate-500 font-medium mt-1">Manage your application preferences and data.</p>
         </div>
         <button className="btn-primary flex items-center gap-2" onClick={handleSave}>
           <Save size={18} />
-          Sync Changes
+          Save Settings
         </button>
       </div>
 
@@ -47,16 +47,16 @@ const SettingsPage = () => {
             <div className="p-2 bg-white rounded-lg shadow-sm text-accent">
               <Cpu size={20} />
             </div>
-            <h2 className="text-sm font-black uppercase tracking-widest text-slate-900">Core Configuration</h2>
+            <h2 className="text-sm font-black uppercase tracking-widest text-slate-900">General Settings</h2>
           </div>
           <div className="p-8 space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">
-                <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Organization ID</label>
+                <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Company Name</label>
                 <input type="text" value={settings.companyName} onChange={e => setSettings({...settings, companyName: e.target.value})} className="input-field" />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Master Admin Protocol</label>
+                <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Admin Email</label>
                 <input type="email" value={settings.adminEmail} onChange={e => setSettings({...settings, adminEmail: e.target.value})} className="input-field" />
               </div>
             </div>
@@ -68,7 +68,7 @@ const SettingsPage = () => {
             <div className="p-2 bg-white rounded-lg shadow-sm text-accent">
               <Shield size={20} />
             </div>
-            <h2 className="text-sm font-black uppercase tracking-widest text-slate-900">Security & Alerts</h2>
+            <h2 className="text-sm font-black uppercase tracking-widest text-slate-900">Preferences</h2>
           </div>
           <div className="p-8 space-y-6">
             <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 group hover:border-accent/20 transition-colors">
@@ -77,8 +77,8 @@ const SettingsPage = () => {
                   <Bell size={20} />
                 </div>
                 <div>
-                  <p className="text-sm font-black text-slate-900 leading-tight">Push Intelligence</p>
-                  <p className="text-xs text-slate-500 font-medium">Broadcast critical system updates to the interface.</p>
+                  <p className="text-sm font-black text-slate-900 leading-tight">Notifications</p>
+                  <p className="text-xs text-slate-500 font-medium">Receive alerts for new leads and tasks.</p>
                 </div>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
@@ -93,8 +93,8 @@ const SettingsPage = () => {
                   <Database size={20} />
                 </div>
                 <div>
-                  <p className="text-sm font-black text-slate-900 leading-tight">Persistence Engine</p>
-                  <p className="text-xs text-slate-500 font-medium">Auto-synchronize local data nodes in real-time.</p>
+                  <p className="text-sm font-black text-slate-900 leading-tight">Auto-save</p>
+                  <p className="text-xs text-slate-500 font-medium">Automatically save changes to local storage.</p>
                 </div>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
@@ -114,10 +114,10 @@ const SettingsPage = () => {
           </div>
           <div className="p-8">
             <p className="text-sm text-slate-500 font-medium mb-6">
-              Executing a factory reset will permanently purge all local partner indexes, pipeline data, and operational directives. This action is irreversible.
+              Deleting all data will permanently remove all clients, leads, and tasks. This action cannot be undone.
             </p>
             <button className="w-full px-6 py-4 bg-white border-2 border-rose-100 rounded-2xl font-black text-rose-500 hover:bg-rose-500 hover:text-white transition-all transform active:scale-[0.98] shadow-sm" onClick={clearAllData}>
-              Initiate Full System Wipe
+              Delete All Data
             </button>
           </div>
         </section>

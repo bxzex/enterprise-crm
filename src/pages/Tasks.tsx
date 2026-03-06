@@ -37,21 +37,23 @@ const Tasks = () => {
   }
 
   const deleteTask = (id: string) => {
-    const updated = tasks.filter(t => t.id !== id)
-    setTasks(updated)
-    setStorage('tasks', updated)
+    if (window.confirm('Delete this task?')) {
+      const updated = tasks.filter(t => t.id !== id)
+      setTasks(updated)
+      setStorage('tasks', updated)
+    }
   }
 
   return (
     <div className="space-y-8 pb-12">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Operations</h1>
-          <p className="text-slate-500 font-medium mt-1">High-priority task execution and workflow management.</p>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Tasks</h1>
+          <p className="text-slate-500 font-medium mt-1">Manage your daily tasks and reminders.</p>
         </div>
         <button className="btn-primary flex items-center gap-2" onClick={() => setIsModalOpen(true)}>
           <Plus size={18} />
-          New Directive
+          Add Task
         </button>
       </div>
 
@@ -59,7 +61,7 @@ const Tasks = () => {
         {/* Active Tasks Column */}
         <div className="space-y-4">
           <div className="flex items-center justify-between px-2">
-            <h2 className="text-sm font-black uppercase tracking-[0.2em] text-slate-400">Active Directives</h2>
+            <h2 className="text-sm font-black uppercase tracking-[0.2em] text-slate-400">Active Tasks</h2>
             <span className="bg-slate-200 text-slate-600 text-[10px] font-black px-2 py-0.5 rounded-full">
               {tasks.filter(t => !t.completed).length}
             </span>
@@ -68,7 +70,7 @@ const Tasks = () => {
           <div className="space-y-3">
             {tasks.filter(t => !t.completed).length === 0 ? (
               <div className="glass-card p-12 text-center text-slate-400 font-medium italic">
-                All systems operational. No pending directives.
+                No pending tasks.
               </div>
             ) : tasks.filter(t => !t.completed).map(task => (
               <motion.div 
@@ -105,7 +107,7 @@ const Tasks = () => {
         {/* Completed Column */}
         <div className="space-y-4">
           <div className="flex items-center justify-between px-2">
-            <h2 className="text-sm font-black uppercase tracking-[0.2em] text-slate-400">Archive Log</h2>
+            <h2 className="text-sm font-black uppercase tracking-[0.2em] text-slate-400">Completed Tasks</h2>
             <span className="bg-slate-200 text-slate-600 text-[10px] font-black px-2 py-0.5 rounded-full">
               {tasks.filter(t => t.completed).length}
             </span>
@@ -114,7 +116,7 @@ const Tasks = () => {
           <div className="space-y-3">
             {tasks.filter(t => t.completed).length === 0 ? (
               <div className="glass-card p-12 text-center text-slate-400 font-medium italic">
-                Archive log is currently empty.
+                No completed tasks.
               </div>
             ) : tasks.filter(t => t.completed).map(task => (
               <motion.div 
@@ -130,7 +132,7 @@ const Tasks = () => {
                 </button>
                 <div className="flex-1">
                   <p className="text-sm font-bold text-slate-500 line-through leading-tight">{task.title}</p>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">Verified & Archived</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-1">Completed</p>
                 </div>
                 <button onClick={() => deleteTask(task.id)} className="opacity-0 group-hover:opacity-100 p-2 text-slate-300 hover:text-rose-500 transition-all">
                   <Trash2 size={16} />
@@ -155,32 +157,32 @@ const Tasks = () => {
               className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden"
             >
               <div className="p-8 border-b border-slate-100">
-                <h2 className="text-2xl font-black text-slate-900 tracking-tight">New Directive</h2>
+                <h2 className="text-2xl font-black text-slate-900 tracking-tight">Add Task</h2>
               </div>
               <form onSubmit={handleSave} className="p-8 space-y-6">
                 <div className="space-y-2">
-                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Description</label>
-                  <input required type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="input-field" placeholder="Execution details..." />
+                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Task Description</label>
+                  <input required type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="input-field" placeholder="Task description..." />
                 </div>
                 <div className="grid grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Urgency</label>
+                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Priority</label>
                     <select value={formData.priority} onChange={e => setFormData({...formData, priority: e.target.value as any})} className="input-field appearance-none">
-                      <option value="Low">Standard</option>
-                      <option value="Medium">Elevated</option>
-                      <option value="High">Critical</option>
+                      <option value="Low">Low</option>
+                      <option value="Medium">Medium</option>
+                      <option value="High">High</option>
                     </select>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Deadline</label>
+                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Due Date</label>
                     <input required type="date" value={formData.dueDate} onChange={e => setFormData({...formData, dueDate: e.target.value})} className="input-field" />
                   </div>
                 </div>
                 <div className="pt-4 flex gap-3">
-                  <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 px-6 py-3 border border-slate-200 rounded-2xl font-bold text-slate-600 hover:bg-slate-50 transition-colors">Abort</button>
+                  <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 px-6 py-3 border border-slate-200 rounded-2xl font-bold text-slate-600 hover:bg-slate-50 transition-colors">Cancel</button>
                   <button type="submit" className="flex-[2] btn-primary py-3 rounded-2xl flex items-center justify-center gap-2">
                     <CheckSquare size={18} />
-                    Issue Directive
+                    Save Task
                   </button>
                 </div>
               </form>

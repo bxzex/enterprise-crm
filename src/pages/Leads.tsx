@@ -7,6 +7,7 @@ const Leads = () => {
   const [leads, setLeads] = useState<Lead[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingLead, setEditingLead] = useState<Lead | null>(null)
+  const [statusFilter, setStatusFilter] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -38,7 +39,7 @@ const Leads = () => {
   }
 
   const handleDelete = (id: string) => {
-    if (window.confirm('Delete this sales opportunity?')) {
+    if (window.confirm('Are you sure you want to delete this lead?')) {
       const updated = leads.filter(l => l.id !== id)
       setLeads(updated)
       setStorage('leads', updated)
@@ -67,34 +68,54 @@ const Leads = () => {
     setEditingLead(null)
   }
 
+  const filteredLeads = statusFilter 
+    ? leads.filter(l => l.status === statusFilter)
+    : leads
+
   return (
     <div className="space-y-8 pb-12">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Sales Pipeline</h1>
-          <p className="text-slate-500 font-medium mt-1">Acquisition funnel and deal velocity tracking.</p>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Leads</h1>
+          <p className="text-slate-500 font-medium mt-1">Track and manage your potential customers.</p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors shadow-sm">
-            <Filter size={16} />
-            Pipeline Filter
-          </button>
+          <div className="relative">
+            <select 
+              className="appearance-none flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors shadow-sm pr-10 outline-none"
+              onChange={(e) => setStatusFilter(e.target.value || null)}
+              value={statusFilter || ''}
+            >
+              <option value="">All Statuses</option>
+              <option value="New">New</option>
+              <option value="Contacted">Contacted</option>
+              <option value="Qualified">Qualified</option>
+              <option value="Lost">Lost</option>
+            </select>
+            <Filter size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+          </div>
           <button className="btn-primary flex items-center gap-2" onClick={() => openModal()}>
-            <Zap size={18} />
-            Inject Opportunity
+            <Plus size={18} />
+            Add Lead
           </button>
         </div>
       </div>
 
-      {/* Pipeline Status Overview */}
+      {/* Lead Status Overview */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {['New', 'Contacted', 'Qualified', 'Lost'].map((status) => (
-          <div key={status} className="glass-card p-4 border-l-4 border-l-accent/20">
+          <button 
+            key={status} 
+            onClick={() => setStatusFilter(status === statusFilter ? null : status)}
+            className={`glass-card p-4 border-l-4 text-left transition-all hover:scale-[1.02] ${
+              statusFilter === status ? 'border-l-accent ring-2 ring-accent/20' : 'border-l-accent/20'
+            }`}
+          >
             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1">{status}</p>
             <p className="text-xl font-black text-slate-900">
               {leads.filter(l => l.status === status).length} <span className="text-xs font-medium text-slate-400">Leads</span>
             </p>
-          </div>
+          </button>
         ))}
       </div>
 
@@ -103,21 +124,21 @@ const Leads = () => {
           <table className="w-full">
             <thead>
               <tr className="bg-slate-50/50 text-left">
-                <th className="px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Target</th>
-                <th className="px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Origin</th>
-                <th className="px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Projected Value</th>
-                <th className="px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Stage</th>
+                <th className="px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Name</th>
+                <th className="px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Source</th>
+                <th className="px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Value</th>
+                <th className="px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Status</th>
                 <th className="px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {leads.length === 0 ? (
+              {filteredLeads.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="px-6 py-20 text-center text-slate-400 font-medium">
-                    Pipeline empty. Initiate outbound sequences to populate.
+                    No leads found.
                   </td>
                 </tr>
-              ) : leads.map(lead => (
+              ) : filteredLeads.map(lead => (
                 <tr key={lead.id} className="hover:bg-slate-50/80 transition-colors group">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
@@ -172,40 +193,40 @@ const Leads = () => {
               className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden"
             >
               <div className="p-8 border-b border-slate-100">
-                <h2 className="text-2xl font-black text-slate-900 tracking-tight">Lead Intelligence</h2>
+                <h2 className="text-2xl font-black text-slate-900 tracking-tight">{editingLead ? 'Edit Lead' : 'New Lead'}</h2>
               </div>
               <form onSubmit={handleSave} className="p-8 space-y-6">
                 <div className="space-y-2">
-                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Contact Identity</label>
+                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Full Name</label>
                   <input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="input-field" placeholder="Full name..." />
                 </div>
                 <div className="grid grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Capture Source</label>
+                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Lead Source</label>
                     <select value={formData.source} onChange={e => setFormData({...formData, source: e.target.value})} className="input-field appearance-none">
-                      <option value="Website">Inbound Web</option>
-                      <option value="Referral">Network Referral</option>
-                      <option value="LinkedIn">Social Outreach</option>
-                      <option value="Cold Outreach">Cold Matrix</option>
+                      <option value="Website">Website</option>
+                      <option value="Referral">Referral</option>
+                      <option value="LinkedIn">LinkedIn</option>
+                      <option value="Cold Outreach">Cold Outreach</option>
                     </select>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Deal Valuation ($)</label>
+                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Lead Value ($)</label>
                     <input required type="number" value={formData.value} onChange={e => setFormData({...formData, value: parseInt(e.target.value) || 0})} className="input-field" />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Pipeline Stage</label>
+                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Status</label>
                   <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value as any})} className="input-field appearance-none">
-                    <option value="New">Initial Contact</option>
-                    <option value="Contacted">Active Discussion</option>
-                    <option value="Qualified">High Probability</option>
-                    <option value="Lost">Closed/Lost</option>
+                    <option value="New">New</option>
+                    <option value="Contacted">Contacted</option>
+                    <option value="Qualified">Qualified</option>
+                    <option value="Lost">Lost</option>
                   </select>
                 </div>
                 <div className="pt-4 flex gap-3">
                   <button type="button" onClick={closeModal} className="flex-1 px-6 py-3 border border-slate-200 rounded-2xl font-bold text-slate-600 hover:bg-slate-50 transition-colors">Cancel</button>
-                  <button type="submit" className="flex-[2] btn-primary py-3 rounded-2xl">Commit to Pipeline</button>
+                  <button type="submit" className="flex-[2] btn-primary py-3 rounded-2xl">Save Lead</button>
                 </div>
               </form>
             </motion.div>
