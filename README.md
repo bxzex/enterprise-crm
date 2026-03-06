@@ -37,3 +37,6 @@ This project is Open Source (MIT). You are free to use, modify, and distribute i
 2. `npm run dev` (Local development)
 3. `npm run build` (Production build)
 4. `npm run deploy` (GitHub Pages automation)
+
+---
+Built by bxzex (https://github.com/bxzex).
