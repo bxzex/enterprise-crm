@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { Save, Shield, Bell, User, Database, Globe, Lock, Cpu } from 'lucide-react'
+import { Save, Shield, Bell, Database, Lock, Cpu } from 'lucide-react'
 import { getStorage, setStorage } from '../utils/storage'
-import { motion } from 'framer-motion'
 
 const SettingsPage = () => {
   const [settings, setSettings] = useState({
     companyName: 'Enterprise CRM',
+    adminName: 'Admin User',
     adminEmail: 'admin@example.com',
     notifications: true,
     darkMode: false,
@@ -13,11 +13,14 @@ const SettingsPage = () => {
   })
 
   useEffect(() => {
-    setSettings(getStorage('app_settings', settings))
+    const saved = getStorage('app_settings', settings)
+    setSettings(saved)
   }, [])
 
   const handleSave = () => {
     setStorage('app_settings', settings)
+    // Dispatch event to notify App component
+    window.dispatchEvent(new Event('settingsUpdated'))
     alert('Settings saved successfully.')
   }
 
@@ -54,6 +57,10 @@ const SettingsPage = () => {
               <div className="space-y-2">
                 <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Company Name</label>
                 <input type="text" value={settings.companyName} onChange={e => setSettings({...settings, companyName: e.target.value})} className="input-field" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Admin Name</label>
+                <input type="text" value={settings.adminName} onChange={e => setSettings({...settings, adminName: e.target.value})} className="input-field" />
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Admin Email</label>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { HashRouter as Router, Routes, Route, NavLink } from 'react-router-dom'
 import { 
   LayoutDashboard, 
@@ -13,6 +13,7 @@ import {
   LogOut
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { getStorage } from './utils/storage'
 
 // Pages
 import Dashboard from './pages/Dashboard'
@@ -22,6 +23,23 @@ import Tasks from './pages/Tasks'
 import SettingsPage from './pages/Settings'
 
 function App() {
+  const [settings, setSettings] = useState({
+    companyName: 'Enterprise CRM',
+    adminName: 'Admin User',
+    adminEmail: 'admin@example.com'
+  })
+
+  const loadSettings = () => {
+    const saved = getStorage('app_settings', settings)
+    setSettings(saved)
+  }
+
+  useEffect(() => {
+    loadSettings()
+    window.addEventListener('settingsUpdated', loadSettings)
+    return () => window.removeEventListener('settingsUpdated', loadSettings)
+  }, [])
+
   return (
     <Router>
       <div className="flex h-screen w-screen bg-slate-50 overflow-hidden font-sans">
@@ -31,7 +49,7 @@ function App() {
             <div className="bg-accent p-2 rounded-xl shadow-lg shadow-accent/30 text-white">
               <Briefcase size={24} />
             </div>
-            <span className="text-xl font-bold text-white tracking-tight">Enterprise CRM</span>
+            <span className="text-xl font-bold text-white tracking-tight">{settings.companyName}</span>
           </div>
 
           <nav className="flex-1 space-y-2">
@@ -95,11 +113,11 @@ function App() {
 
               <div className="flex items-center gap-3">
                 <div className="text-right hidden sm:block">
-                  <p className="text-sm font-bold text-slate-900 leading-none">Admin User</p>
+                  <p className="text-sm font-bold text-slate-900 leading-none">{settings.adminName}</p>
                   <p className="text-[11px] font-medium text-slate-500 mt-1 uppercase tracking-wider">System Administrator</p>
                 </div>
                 <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-accent/20 ring-2 ring-white">
-                  AD
+                  {settings.adminName.split(' ').map(n => n[0]).join('')}
                 </div>
               </div>
             </div>
@@ -109,6 +127,7 @@ function App() {
           <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
             <AnimatePresence mode="wait">
               <motion.div
+                key={window.location.hash}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
