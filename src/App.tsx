@@ -23,15 +23,21 @@ import Tasks from './pages/Tasks'
 import SettingsPage from './pages/Settings'
 
 function App() {
-  const [settings, setSettings] = useState({
+  const defaultSettings = {
     companyName: 'Enterprise CRM',
     adminName: 'Admin User',
     adminEmail: 'admin@example.com'
-  })
+  }
+
+  const [settings, setSettings] = useState(defaultSettings)
 
   const loadSettings = () => {
-    const saved = getStorage('app_settings', settings)
-    setSettings(saved)
+    const saved = getStorage('app_settings', defaultSettings)
+    // Ensure we have all required fields even if storage has old data
+    setSettings({
+      ...defaultSettings,
+      ...saved
+    })
   }
 
   useEffect(() => {
@@ -39,6 +45,13 @@ function App() {
     window.addEventListener('settingsUpdated', loadSettings)
     return () => window.removeEventListener('settingsUpdated', loadSettings)
   }, [])
+
+  const adminInitials = (settings.adminName || 'AU')
+    .split(' ')
+    .filter(Boolean)
+    .map(n => n[0])
+    .join('')
+    .toUpperCase();
 
   return (
     <Router>
@@ -49,7 +62,7 @@ function App() {
             <div className="bg-accent p-2 rounded-xl shadow-lg shadow-accent/30 text-white">
               <Briefcase size={24} />
             </div>
-            <span className="text-xl font-bold text-white tracking-tight">{settings.companyName}</span>
+            <span className="text-xl font-bold text-white tracking-tight">{settings.companyName || 'Enterprise CRM'}</span>
           </div>
 
           <nav className="flex-1 space-y-2">
@@ -113,11 +126,11 @@ function App() {
 
               <div className="flex items-center gap-3">
                 <div className="text-right hidden sm:block">
-                  <p className="text-sm font-bold text-slate-900 leading-none">{settings.adminName}</p>
+                  <p className="text-sm font-bold text-slate-900 leading-none">{settings.adminName || 'Admin User'}</p>
                   <p className="text-[11px] font-medium text-slate-500 mt-1 uppercase tracking-wider">System Administrator</p>
                 </div>
                 <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-accent/20 ring-2 ring-white">
-                  {settings.adminName.split(' ').map(n => n[0]).join('')}
+                  {adminInitials}
                 </div>
               </div>
             </div>
