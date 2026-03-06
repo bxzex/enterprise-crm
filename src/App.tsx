@@ -11,7 +11,7 @@ import {
   Search
 } from 'lucide-react'
 
-// Pages (will create these next)
+// Pages
 import Dashboard from './pages/Dashboard'
 import Clients from './pages/Clients'
 import Leads from './pages/Leads'
