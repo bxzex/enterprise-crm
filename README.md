@@ -1,4 +1,4 @@
-# VoltCraft Enterprise CRM
+# Enterprise CRM
 
 A high-performance, premium Enterprise CRM solution designed for elite sales and client management. Built with a modern glassmorphism design system using Tailwind CSS v4 and Framer Motion.
 
