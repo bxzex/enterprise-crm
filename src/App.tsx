@@ -13,7 +13,8 @@ import {
   LogOut,
   Github,
   Linkedin,
-  Instagram
+  Instagram,
+  Heart
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { getStorage } from './utils/storage'
@@ -99,6 +100,16 @@ function App() {
               </div>
               <p className="text-[10px] text-slate-400 mt-2">Local Mode Active</p>
             </div>
+
+            <a 
+              href="https://buy.stripe.com/9B6eVfd9E6OC3sr7cEaAw03" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 text-accent hover:text-white px-4 py-2 transition-colors w-full group"
+            >
+              <Heart size={18} fill="currentColor" className="group-hover:fill-white transition-all" />
+              <span className="text-sm font-bold">Support Project</span>
+            </a>
 
             <a 
               href="https://github.com/bxzex" 
