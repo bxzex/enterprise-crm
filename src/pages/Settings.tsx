@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Save, Shield, Bell, Database, Lock, Cpu } from 'lucide-react'
-import { getStorage, setStorage } from '../utils/storage'
+
+import { getStorage, setStorage, loadSampleData } from '../utils/storage'
 
 const SettingsPage = () => {
   const [settings, setSettings] = useState({
@@ -21,12 +21,21 @@ const SettingsPage = () => {
     setStorage('app_settings', settings)
     // Dispatch event to notify App component
     window.dispatchEvent(new Event('settingsUpdated'))
-    alert('Settings saved successfully.')
+    alert('Settings saved.')
+  }
+
+  const restoreSample = () => {
+    if (window.confirm('Replace your current clients, leads and tasks with the sample data?')) {
+      loadSampleData()
+      window.location.reload()
+    }
   }
 
   const clearAllData = () => {
-    if (window.confirm('WARNING: This will delete all your data permanently. Are you sure?')) {
-      localStorage.clear()
+    if (window.confirm('Delete all clients, leads and tasks? This cannot be undone.')) {
+      setStorage('clients', [])
+      setStorage('leads', [])
+      setStorage('tasks', [])
       window.location.reload()
     }
   }
@@ -35,11 +44,10 @@ const SettingsPage = () => {
     <div className="space-y-8 pb-12 max-w-4xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Settings</h1>
+          <h1 className="text-2xl font-semibold text-slate-900 tracking-tight">Settings</h1>
           <p className="text-slate-500 font-medium mt-1">Manage your application preferences and data.</p>
         </div>
         <button className="btn-primary flex items-center gap-2" onClick={handleSave}>
-          <Save size={18} />
           Save Settings
         </button>
       </div>
@@ -47,23 +55,20 @@ const SettingsPage = () => {
       <div className="grid grid-cols-1 gap-8">
         <section className="glass-card overflow-hidden">
           <div className="p-6 bg-slate-50 border-b border-slate-100 flex items-center gap-3">
-            <div className="p-2 bg-white rounded-lg shadow-sm text-accent">
-              <Cpu size={20} />
-            </div>
-            <h2 className="text-sm font-black uppercase tracking-widest text-slate-900">General Settings</h2>
+            <h2 className="text-sm font-semibold text-slate-900">General Settings</h2>
           </div>
           <div className="p-8 space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">
-                <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Company Name</label>
+                <label className="text-xs font-semibold text-slate-500">Company Name</label>
                 <input type="text" value={settings.companyName} onChange={e => setSettings({...settings, companyName: e.target.value})} className="input-field" />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Admin Name</label>
+                <label className="text-xs font-semibold text-slate-500">Admin Name</label>
                 <input type="text" value={settings.adminName} onChange={e => setSettings({...settings, adminName: e.target.value})} className="input-field" />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Admin Email</label>
+                <label className="text-xs font-semibold text-slate-500">Admin Email</label>
                 <input type="email" value={settings.adminEmail} onChange={e => setSettings({...settings, adminEmail: e.target.value})} className="input-field" />
               </div>
             </div>
@@ -72,58 +77,28 @@ const SettingsPage = () => {
 
         <section className="glass-card overflow-hidden">
           <div className="p-6 bg-slate-50 border-b border-slate-100 flex items-center gap-3">
-            <div className="p-2 bg-white rounded-lg shadow-sm text-accent">
-              <Shield size={20} />
-            </div>
-            <h2 className="text-sm font-black uppercase tracking-widest text-slate-900">Preferences</h2>
+            <h2 className="text-sm font-semibold text-slate-900">Data</h2>
           </div>
-          <div className="p-8 space-y-6">
-            <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 group hover:border-accent/20 transition-colors">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-white rounded-xl shadow-sm text-slate-400 group-hover:text-accent transition-colors">
-                  <Bell size={20} />
-                </div>
-                <div>
-                  <p className="text-sm font-black text-slate-900 leading-tight">Notifications</p>
-                  <p className="text-xs text-slate-500 font-medium">Receive alerts for new leads and tasks.</p>
-                </div>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" checked={settings.notifications} onChange={e => setSettings({...settings, notifications: e.target.checked})} className="sr-only peer" />
-                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent shadow-sm"></div>
-              </label>
+          <div className="p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <p className="text-sm font-semibold text-slate-900 leading-tight">Sample data</p>
+              <p className="text-sm text-slate-500 mt-1">Replace everything with the sample clients, leads and tasks, dated from today.</p>
             </div>
-
-            <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 group hover:border-accent/20 transition-colors">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-white rounded-xl shadow-sm text-slate-400 group-hover:text-accent transition-colors">
-                  <Database size={20} />
-                </div>
-                <div>
-                  <p className="text-sm font-black text-slate-900 leading-tight">Auto-save</p>
-                  <p className="text-xs text-slate-500 font-medium">Automatically save changes to local storage.</p>
-                </div>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" checked={settings.autoSave} onChange={e => setSettings({...settings, autoSave: e.target.checked})} className="sr-only peer" />
-                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent shadow-sm"></div>
-              </label>
-            </div>
+            <button className="shrink-0 px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-50" onClick={restoreSample}>
+              Load sample data
+            </button>
           </div>
         </section>
 
         <section className="glass-card overflow-hidden border-rose-100">
           <div className="p-6 bg-rose-50 border-b border-rose-100 flex items-center gap-3">
-            <div className="p-2 bg-white rounded-lg shadow-sm text-rose-500">
-              <Lock size={20} />
-            </div>
-            <h2 className="text-sm font-black uppercase tracking-widest text-rose-900">Danger Zone</h2>
+            <h2 className="text-sm font-semibold text-rose-900">Danger Zone</h2>
           </div>
           <div className="p-8">
             <p className="text-sm text-slate-500 font-medium mb-6">
               Deleting all data will permanently remove all clients, leads, and tasks. This action cannot be undone.
             </p>
-            <button className="w-full px-6 py-4 bg-white border-2 border-rose-100 rounded-2xl font-black text-rose-500 hover:bg-rose-500 hover:text-white transition-all transform active:scale-[0.98] shadow-sm" onClick={clearAllData}>
+            <button className="w-full px-6 py-4 bg-white border-2 border-rose-100 rounded-lg font-semibold text-rose-500 hover:bg-rose-500 hover:text-white transition-all transform active:scale-[0.98] shadow-sm" onClick={clearAllData}>
               Delete All Data
             </button>
           </div>

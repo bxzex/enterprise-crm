@@ -1,18 +1,4 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { 
-  Users, 
-  TrendingUp, 
-  DollarSign, 
-  Clock, 
-  ArrowUpRight, 
-  ArrowDownRight,
-  MoreVertical,
-  Calendar,
-  ChevronRight,
-  UserPlus,
-  Target,
-  CheckCircle2
-} from 'lucide-react'
 import { getStorage, Client, Lead, Task } from '../utils/storage'
 import { exportToCSV } from '../utils/export'
 import { 
@@ -57,27 +43,24 @@ const Dashboard = () => {
         id: `c-${c.id}`,
         type: 'client',
         title: c.name,
-        action: 'added as a new client',
+        action: 'added as a client',
         date: c.createdAt,
-        icon: UserPlus,
-        color: 'bg-violet-100 text-violet-600'
+        color: 'bg-slate-100 text-slate-600'
       })),
       ...leads.map(l => ({
         id: `l-${l.id}`,
         type: 'lead',
         title: l.name,
-        action: `new lead from ${l.source}`,
+        action: `came in as a lead from ${l.source}`,
         date: l.createdAt,
-        icon: Target,
         color: 'bg-blue-100 text-blue-600'
       })),
       ...tasks.map(t => ({
         id: `t-${t.id}`,
         type: 'task',
         title: t.title,
-        action: t.completed ? 'completed a task' : 'created a new task',
+        action: t.completed ? 'marked done' : 'added as a task',
         date: t.createdAt || t.dueDate, // Fallback to dueDate if createdAt is missing
-        icon: t.completed ? CheckCircle2 : Clock,
         color: t.completed ? 'bg-emerald-100 text-emerald-600' : 'bg-orange-100 text-orange-600'
       }))
     ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
@@ -139,16 +122,12 @@ const Dashboard = () => {
     <div className="space-y-8 pb-12">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Dashboard Overview</h1>
-          <p className="text-slate-500 font-medium mt-1">Overview of your business performance.</p>
+          <h1 className="text-2xl font-semibold text-slate-900 tracking-tight">Dashboard</h1>
+          <p className="text-slate-500 font-medium mt-1">Pipeline, clients and tasks at a glance.</p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors shadow-sm">
-            <Calendar size={16} />
-            Last 7 Days
-          </button>
           <button className="btn-primary" onClick={handleExport}>
-            Export Data
+            Export CSV
           </button>
         </div>
       </div>
@@ -156,19 +135,14 @@ const Dashboard = () => {
       {/* Professional Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { label: 'Total Revenue', value: `$${stats.totalRevenue.toLocaleString()}`, icon: DollarSign, color: 'text-emerald-600', bgColor: 'bg-emerald-50' },
-          { label: 'Active Leads', value: stats.totalLeads, icon: TrendingUp, color: 'text-blue-600', bgColor: 'bg-blue-50' },
-          { label: 'Total Clients', value: stats.totalClients, icon: Users, color: 'text-violet-600', bgColor: 'bg-violet-50' },
-          { label: 'Pending Tasks', value: stats.pendingTasks, icon: Clock, color: 'text-orange-600', bgColor: 'bg-orange-50' },
+          { label: 'Pipeline value', value: `$${stats.totalRevenue.toLocaleString()}`, color: 'text-emerald-600', bgColor: 'bg-emerald-50' },
+          { label: 'Leads', value: stats.totalLeads, color: 'text-blue-600', bgColor: 'bg-blue-50' },
+          { label: 'Clients', value: stats.totalClients, color: 'text-slate-600', bgColor: 'bg-slate-50' },
+          { label: 'Open tasks', value: stats.pendingTasks, color: 'text-orange-600', bgColor: 'bg-orange-50' },
         ].map((stat, i) => (
           <div key={i} className="glass-card p-6 group hover:border-slate-300 transition-all duration-200">
-            <div className="flex justify-between items-start mb-4">
-              <div className={`${stat.bgColor} ${stat.color} p-2.5 rounded-xl`}>
-                <stat.icon size={20} />
-              </div>
-            </div>
-            <h3 className="text-slate-500 text-xs font-bold uppercase tracking-wider mb-1">{stat.label}</h3>
-            <p className="text-2xl font-black text-slate-900">{stat.value}</p>
+            <h3 className="text-slate-500 text-xs font-bold mb-1">{stat.label}</h3>
+            <p className="text-2xl font-semibold text-slate-900">{stat.value}</p>
           </div>
         ))}
       </div>
@@ -178,31 +152,27 @@ const Dashboard = () => {
         <div className="lg:col-span-2 glass-card p-8">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-xl font-black text-slate-900">Revenue Overview</h2>
-              <p className="text-sm text-slate-500 font-medium">Daily revenue from leads</p>
-            </div>
-            <div className="flex items-center gap-2 text-[10px] font-bold text-emerald-500 bg-emerald-50 px-2 py-1 rounded-lg">
-              <ArrowUpRight size={12} />
-              REAL-TIME
+              <h2 className="text-xl font-semibold text-slate-900">New pipeline, last 7 days</h2>
+              <p className="text-sm text-slate-500 font-medium">Value of the leads added each day</p>
             </div>
           </div>
-          <div className="h-[350px] w-full">
+          <div className="h-[260px] w-full">
             <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
               <AreaChart data={chartData}>
                 <defs>
                   <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#2563eb" stopOpacity={0.1}/>
-                    <stop offset="95%" stopColor="#2563eb" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#1f5a94" stopOpacity={0.1}/>
+                    <stop offset="95%" stopColor="#1f5a94" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12, fontWeight: 600}} />
                 <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12, fontWeight: 600}} />
                 <Tooltip 
-                  contentStyle={{ backgroundColor: '#fff', borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
-                  formatter={(value: any) => [`$${value.toLocaleString()}`, 'Revenue']}
+                  contentStyle={{ backgroundColor: '#fff', borderRadius: '6px', border: '1px solid #e2e8f0', boxShadow: 'none', fontSize: 13 }}
+                  formatter={(value: any) => [`$${value.toLocaleString()}`, 'Lead value']}
                 />
-                <Area type="monotone" dataKey="revenue" stroke="#2563eb" strokeWidth={3} fillOpacity={1} fill="url(#colorRev)" />
+                <Area type="monotone" dataKey="revenue" stroke="#1f5a94" strokeWidth={2} fillOpacity={1} fill="url(#colorRev)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -210,25 +180,24 @@ const Dashboard = () => {
 
         <div className="glass-card p-8">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-xl font-black text-slate-900">Lead Volume</h2>
-            <div className="w-2 h-2 bg-accent rounded-full animate-pulse"></div>
+            <h2 className="text-xl font-semibold text-slate-900">Leads added per day</h2>
           </div>
-          <div className="h-[350px] w-full">
+          <div className="h-[260px] w-full">
             <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
               <BarChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12, fontWeight: 600}} />
                 <Tooltip 
                   cursor={{fill: '#f8fafc'}}
-                  contentStyle={{ backgroundColor: '#fff', borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
+                  contentStyle={{ backgroundColor: '#fff', borderRadius: '6px', border: '1px solid #e2e8f0', boxShadow: 'none', fontSize: 13 }}
                 />
-                <Bar dataKey="leads" fill="#2563eb" radius={[6, 6, 6, 6]} barSize={12} />
+                <Bar dataKey="leads" fill="#1f5a94" radius={[2, 2, 0, 0]} barSize={18} />
               </BarChart>
             </ResponsiveContainer>
           </div>
           <div className="mt-6 pt-6 border-t border-slate-100">
             <div className="flex justify-between items-center text-sm font-bold">
-              <span className="text-slate-500 uppercase tracking-widest text-[10px]">Conversion Rate</span>
+              <span className="text-slate-500 text-xs">Conversion Rate</span>
               <span className="text-slate-900">
                 {stats.totalLeads > 0 ? ((stats.totalClients / (stats.totalLeads + stats.totalClients)) * 100).toFixed(1) : 0}%
               </span>
@@ -240,33 +209,25 @@ const Dashboard = () => {
       {/* Activity Feed */}
       <div className="glass-card p-8">
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-xl font-black text-slate-900">Recent Activity</h2>
-          <button className="text-xs font-bold text-accent hover:underline">View All</button>
+          <h2 className="text-xl font-semibold text-slate-900">Recent Activity</h2>
         </div>
-        <div className="space-y-6">
+        <div className="space-y-4">
           {recentActivity.length === 0 ? (
             <div className="py-12 text-center">
-              <p className="text-slate-400 font-medium">No recent activity detected.</p>
+              <p className="text-slate-500 font-medium">Nothing yet. Add a client, lead or task to see it here.</p>
             </div>
           ) : recentActivity.map((activity) => (
-            <div key={activity.id} className="flex items-center gap-4 group cursor-pointer p-3 -m-3 hover:bg-slate-50 rounded-2xl transition-colors">
-              <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold shadow-sm ${activity.color}`}>
-                <activity.icon size={20} />
-              </div>
+            <div key={activity.id} className="flex items-center gap-3">
               <div className="flex-1">
                 <div className="flex justify-between">
-                  <p className="text-sm font-black text-slate-900 tracking-tight">
-                    {activity.title} <span className="font-medium text-slate-400">{activity.action}</span>
+                  <p className="text-sm font-semibold text-slate-900 tracking-tight">
+                    {activity.title} <span className="font-medium text-slate-500">{activity.action}</span>
                   </p>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                  <span className="text-xs font-bold text-slate-500">
                     {formatRelativeTime(activity.date)}
                   </span>
                 </div>
-                <p className="text-xs text-slate-500 font-medium mt-0.5">
-                  {activity.type === 'client' ? 'Direct client interaction' : 'New lead incoming'}
-                </p>
               </div>
-              <ChevronRight size={18} className="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
           ))}
         </div>
