@@ -85,7 +85,6 @@ function App() {
 
           <div className="mt-auto pt-4 border-t border-slate-200 text-sm">
             <p className="px-3 pb-3 text-xs text-slate-500">Data is saved in this browser only.</p>
-            <a href="https://buy.stripe.com/9B6eVfd9E6OC3sr7cEaAw03" target="_blank" rel="noopener noreferrer" className="block px-3 py-1.5 text-slate-600 hover:text-slate-900">Support this project</a>
             <a href="https://github.com/bxzex/enterprise-crm" target="_blank" rel="noopener noreferrer" className="block px-3 py-1.5 text-slate-600 hover:text-slate-900">Source on GitHub</a>
             <p className="px-3 pt-3 text-xs text-slate-500">
               © 2026 <a href="https://bxzex.com" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-slate-700">bxzex</a>
